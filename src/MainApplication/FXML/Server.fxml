@@ -16,7 +16,7 @@
             <Font size="24.0" />
          </font>
       </Label>
-      <BorderPane layoutX="313.0" layoutY="49.0" prefHeight="35.0" prefWidth="265.0" style="-fx-border-color: blue;">
+      <BorderPane layoutX="313.0" layoutY="49.0" prefHeight="35.0" prefWidth="265.0">
          <left>
             <Label text="ServerIP:" BorderPane.alignment="CENTER" />
          </left>
