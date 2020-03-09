@@ -43,7 +43,8 @@ public class HandleAClient implements Runnable {
 
         }
         catch (IOException e) {
-            e.printStackTrace();
+//            e.printStackTrace();
+            System.out.println("Connection lost..");
         }
     }
 
