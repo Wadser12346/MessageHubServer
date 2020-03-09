@@ -7,22 +7,21 @@ import java.io.Serializable;
  * This class will have a picture and a string component as well as the user information attached
  */
 public class ChatMessage implements Serializable {
-    private String user;
+
     private StringMessage stringMessage;
     private PictureMessage pictureMessage;
 
-    public ChatMessage(String user, StringMessage stringMessage, PictureMessage pictureMessage) {
-        this.user = user;
+    public ChatMessage(StringMessage stringMessage, PictureMessage pictureMessage) {
         this.stringMessage = stringMessage;
         this.pictureMessage = pictureMessage;
     }
 
-    public ChatMessage(String user, StringMessage stringMessage) {
-        this(user, stringMessage, null);
+    public ChatMessage(StringMessage stringMessage) {
+        this(stringMessage, null);
     }
 
-    public ChatMessage(String user, PictureMessage pictureMessage){
-        this(user, null, pictureMessage);
+    public ChatMessage(PictureMessage pictureMessage){
+        this(null, pictureMessage);
     }
 
     public StringMessage getStringMessage() {
