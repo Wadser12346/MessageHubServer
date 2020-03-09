@@ -1,6 +1,4 @@
-package MainApplication.MessageBusFiles;
-
-import MainApplication.MessageBusFiles.ChatMessage;
+package MainApplication;
 
 import java.io.*;
 import java.net.InetAddress;

@@ -1,4 +1,4 @@
-package MainApplication.MessageBusFiles;
+package MainApplication;
 
 import java.io.IOException;
 import java.net.InetAddress;

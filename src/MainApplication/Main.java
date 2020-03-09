@@ -1,4 +1,4 @@
-package MainApplication.MessageBusFiles;
+package MainApplication;
 
 import javafx.application.Application;
 import javafx.stage.Stage;
