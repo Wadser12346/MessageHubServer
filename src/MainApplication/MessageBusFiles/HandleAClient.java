@@ -1,4 +1,6 @@
-package MainApplication;
+package MainApplication.MessageBusFiles;
+
+import MainApplication.MessageBusFiles.ChatMessage;
 
 import java.io.*;
 import java.net.InetAddress;
@@ -30,6 +32,7 @@ public class HandleAClient implements Runnable {
     @Override
     public void run() {
         try {
+            //TODO: ERROR IS HERE< CHECK INPUT STREAM TYPE
             ObjectInputStream inputFromClient = new ObjectInputStream(socket.getInputStream());
             ObjectOutputStream outputToClient = new ObjectOutputStream(socket.getOutputStream());
 
@@ -39,7 +42,6 @@ public class HandleAClient implements Runnable {
                 System.out.println(inetAddress.getHostName() + ": " + message);
                 outputToClient.writeObject(received); //send message back to client
             }
-
         }
         catch (IOException e) {
 //            e.printStackTrace();

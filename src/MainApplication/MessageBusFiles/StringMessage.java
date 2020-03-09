@@ -1,4 +1,4 @@
-package MainApplication;
+package MainApplication.MessageBusFiles;
 
 import java.io.Serializable;
 
