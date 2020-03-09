@@ -9,10 +9,24 @@ import java.net.Socket;
 public class HandleAClient implements Runnable {
     private Socket socket;
     private InetAddress inetAddress;
+    private int clientNo;
 
-    public HandleAClient(Socket socket, InetAddress inetAddress){
+    public HandleAClient(Socket socket, InetAddress inetAddress, int clientNo){
         this.socket = socket;
         this.inetAddress = inetAddress;
+        this.clientNo = clientNo;
+    }
+
+    public Socket getSocket() {
+        return socket;
+    }
+
+    public InetAddress getInetAddress() {
+        return inetAddress;
+    }
+
+    public int getClientNo() {
+        return clientNo;
     }
 
     @Override
@@ -27,7 +41,8 @@ public class HandleAClient implements Runnable {
                 outputToClient.writeUTF(message); //send message back to client
             }
 
-        } catch (IOException e) {
+        }
+        catch (IOException e) {
             e.printStackTrace();
         }
     }

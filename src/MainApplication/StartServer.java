@@ -4,10 +4,18 @@ import java.io.IOException;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 public class StartServer implements Runnable {
-    int clientNo = 0;
+    int clientNo;
+    List<Thread> listThreads;
+
+    public StartServer() {
+        clientNo = 0;
+        listThreads = new ArrayList<>();
+    }
 
     @Override
     public void run() {
@@ -24,8 +32,9 @@ public class StartServer implements Runnable {
                 System.out.println("Client " + clientNo + "'s host name is " + inetAddress.getHostName() + "\n");
                 System.out.println("Client " + clientNo + "'s host name is " + inetAddress.getHostAddress() + "\n");
 
-                    Thread thread1 = new Thread(new HandleAClient(socket, inetAddress));
-                    thread1.start();
+                Thread thread1 = new Thread(new HandleAClient(socket, inetAddress, clientNo));
+                listThreads.add(thread1);
+                thread1.start();
             }
         } catch (IOException e) {
             e.printStackTrace();
