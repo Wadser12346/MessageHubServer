@@ -41,9 +41,12 @@ public class HandleAClient implements Runnable {
             }
 
         }
-        catch (IOException | ClassNotFoundException e) {
+        catch (IOException e) {
 //            e.printStackTrace();
             System.out.println("Connection lost..");
+        }
+        catch (ClassNotFoundException e) {
+            System.out.println("Class not found exception catched");
         }
     }
 
