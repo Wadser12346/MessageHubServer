@@ -1,9 +1,12 @@
 package MainApplication;
 
 
+import MessageFiles.ChatMessage;
+
 import java.io.*;
 import java.net.InetAddress;
 import java.net.Socket;
+
 
 public class HandleAClient implements Runnable {
     private Socket socket;
