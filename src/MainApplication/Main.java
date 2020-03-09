@@ -24,13 +24,14 @@ public class Main extends Application {
 //        primaryStage.setScene(new Scene(root));
 //        primaryStage.show();
 
-        Thread thread = new Thread(new StartServer());
-        thread.start();
+
 
     }
 
     public static void main(String[] args) {
-        launch(args);
+        //launch(args);
+        Thread thread = new Thread(new StartServer());
+        thread.start();
     }
 
 }

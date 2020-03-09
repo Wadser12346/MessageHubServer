@@ -1,8 +1,6 @@
 package MainApplication;
 
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
-import java.io.IOException;
+import java.io.*;
 import java.net.InetAddress;
 import java.net.Socket;
 
@@ -32,17 +30,18 @@ public class HandleAClient implements Runnable {
     @Override
     public void run() {
         try {
-            DataInputStream inputFromClient = new DataInputStream(socket.getInputStream());
-            DataOutputStream outputToClient = new DataOutputStream(socket.getOutputStream());
+            ObjectInputStream inputFromClient = new ObjectInputStream(socket.getInputStream());
+            ObjectOutputStream outputToClient = new ObjectOutputStream(socket.getOutputStream());
 
             while(true){
-                String message = inputFromClient.readUTF();
+                ChatMessage received = (ChatMessage)inputFromClient.readObject();
+                String message = received.getStringMessage().toString();
                 System.out.println(inetAddress.getHostName() + ": " + message);
-                outputToClient.writeUTF(message); //send message back to client
+                outputToClient.writeObject(received); //send message back to client
             }
 
         }
-        catch (IOException e) {
+        catch (IOException | ClassNotFoundException e) {
 //            e.printStackTrace();
             System.out.println("Connection lost..");
         }

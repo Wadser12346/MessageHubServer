@@ -29,8 +29,8 @@ public class StartServer implements Runnable {
                 System.out.println("Starting thread for client " + clientNo + " at " + new Date() + '\n');
 
                 InetAddress inetAddress = socket.getInetAddress();
-                System.out.println("Client " + clientNo + "'s host name is " + inetAddress.getHostName() + "\n");
-                System.out.println("Client " + clientNo + "'s host name is " + inetAddress.getHostAddress() + "\n");
+                System.out.println("Client " + clientNo + "'s host name is " + inetAddress.getHostName());
+                System.out.println("Client " + clientNo + "'s host name is " + inetAddress.getHostAddress());
 
                 Thread thread1 = new Thread(new HandleAClient(socket, inetAddress, clientNo));
                 listThreads.add(thread1);
