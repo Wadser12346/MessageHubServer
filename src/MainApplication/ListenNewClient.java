@@ -8,13 +8,19 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-public class StartServer implements Runnable {
+public class ListenNewClient implements Runnable {
     int clientNo;
-    List<Thread> listThreads;
+    List<Thread> listClientConnections;
 
-    public StartServer() {
+
+
+
+    public ListenNewClient() {
         clientNo = 0;
-        listThreads = new ArrayList<>();
+    }
+
+    public ListenNewClient(List<Thread> listClientConnections) {
+        this.listClientConnections = listClientConnections;
     }
 
     @Override
@@ -32,9 +38,9 @@ public class StartServer implements Runnable {
                 System.out.println("Client " + clientNo + "'s host name is " + inetAddress.getHostName());
                 System.out.println("Client " + clientNo + "'s host name is " + inetAddress.getHostAddress());
 
-                Thread thread1 = new Thread(new HandleAClient(socket, inetAddress, clientNo));
-                listThreads.add(thread1);
-                thread1.start();
+                Thread clientConnectionThread = new Thread(new ClientConnection(socket, inetAddress, clientNo));
+                listClientConnections.add(clientConnectionThread);
+                clientConnectionThread.start();
             }
         } catch (IOException e) {
             e.printStackTrace();

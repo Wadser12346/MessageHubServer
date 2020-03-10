@@ -8,12 +8,12 @@ import java.io.*;
 import java.net.InetAddress;
 import java.net.Socket;
 
-public class HandleAClient implements Runnable {
+public class ClientConnection implements Runnable {
     private Socket socket;
     private InetAddress inetAddress;
     private int clientNo;
 
-    public HandleAClient(Socket socket, InetAddress inetAddress, int clientNo){
+    public ClientConnection(Socket socket, InetAddress inetAddress, int clientNo){
         this.socket = socket;
         this.inetAddress = inetAddress;
         this.clientNo = clientNo;
@@ -52,6 +52,10 @@ public class HandleAClient implements Runnable {
         catch (ClassNotFoundException e) {
             System.out.println("Class not found exception catched");
         }
+    }
+
+    public void pusblishMessage(){
+
     }
 
 }
