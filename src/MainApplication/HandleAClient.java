@@ -1,6 +1,8 @@
 package MainApplication;
 
-import MessageFiles.*;
+
+
+import MessageTypes.ChatMessage;
 
 import java.io.*;
 import java.net.InetAddress;
