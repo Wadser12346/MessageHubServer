@@ -19,8 +19,10 @@ public class ChatServer {
         clientConnectionList = new ArrayList<>();
     }
 
+
+
     public void main(){
-        Thread listenNewClientThread = new Thread(new ListenNewClient(publishMessageQueue, clientListenThreadList));
+        Thread listenNewClientThread = new Thread(new ListenNewClient(publishMessageQueue, clientListenThreadList, clientConnectionList));
         listenNewClientThread.start();
 
 

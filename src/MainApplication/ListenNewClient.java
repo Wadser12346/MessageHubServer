@@ -22,12 +22,6 @@ public class ListenNewClient implements Runnable {
         clientNo = 0;
     }
 
-    public ListenNewClient(BlockingQueue<ChatMessage> publishMessageQueue, List<Thread> clientListenThreadList) {
-        clientNo = 0;
-        this.publishMessageQueue = publishMessageQueue;
-        this.clientListenThreadList = clientListenThreadList;
-    }
-
     public ListenNewClient(BlockingQueue<ChatMessage> publishMessageQueue, List<Thread> clientListenThreadList, List<ClientConnection> clientConnectionList) {
         this.publishMessageQueue = publishMessageQueue;
         this.clientListenThreadList = clientListenThreadList;
