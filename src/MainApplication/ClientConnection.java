@@ -46,13 +46,13 @@ public class ClientConnection implements Runnable {
         try {
             //TODO: ERROR IS HERE< CHECK INPUT STREAM TYPE
             ObjectInputStream inputFromClient = new ObjectInputStream(socket.getInputStream());
-            ObjectOutputStream outputToClient = new ObjectOutputStream(socket.getOutputStream());
+           // ObjectOutputStream outputToClient = new ObjectOutputStream(socket.getOutputStream());
 
             while(true){
                 ChatMessage received = (ChatMessage)inputFromClient.readObject();
                 String message = received.getStringMessage().toString();
                 System.out.println(inetAddress.getHostName() + ": " + message);
-                outputToClient.writeObject(received); //send message back to client
+                //outputToClient.writeObject(received); //send message back to client
 
                 publishMessageQueue.put(received);
             }
