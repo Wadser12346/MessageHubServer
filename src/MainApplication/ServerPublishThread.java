@@ -16,36 +16,35 @@ public class ServerPublishThread implements Runnable {
 
     private List<ObjectOutputStream> clientOutputStreams;
 
+    ObjectOutputStream objectOutputStream;
+    int capacity;
 
-    public ServerPublishThread() {
-        publishMessageQueue = new ArrayBlockingQueue<>(100);
-    }
+    public ServerPublishThread(BlockingQueue<ChatMessage> publishMessageQueue ,List<Thread> clientListenThreadList, List<ClientConnection> clientConnectionList) throws IOException {
+        capacity = 100;
 
-    public ServerPublishThread(List<Thread> clientListenThreadList, List<ClientConnection> clientConnectionList) throws IOException {
-        int capacity = 100;
-        publishMessageQueue = new ArrayBlockingQueue<>(capacity);
+        this.publishMessageQueue = publishMessageQueue;
 
         this.clientConnectionList = clientConnectionList;
         this.clientListenThreadList = clientListenThreadList;
 
-        //populate outputstreams
-        clientOutputStreams = new ArrayList<>();
-        for(int i = 0; i < capacity; i++){
-            ObjectOutputStream obj = new ObjectOutputStream(this.clientConnectionList.get(i).getSocket().getOutputStream());
-            clientOutputStreams.add(obj);
-        }
+        objectOutputStream = null;
     }
 
     @Override
     public void run() {
         while(true){
+
             System.out.println("Producer: ");
             try {
                 ChatMessage toPublish = publishMessageQueue.take();
                 System.out.println(toPublish);
+                for(int i = 0; i < clientConnectionList.size(); i++){
+                    objectOutputStream = new ObjectOutputStream(clientConnectionList.get(i).getSocket().getOutputStream());
+                    objectOutputStream.writeObject(toPublish);
+                }
 
             }
-            catch (InterruptedException e) {
+            catch (InterruptedException | IOException e) {
                 e.printStackTrace();
                 System.out.println("take interrupted");
             }

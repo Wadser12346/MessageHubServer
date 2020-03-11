@@ -18,10 +18,6 @@ public class ListenNewClient implements Runnable {
     List<ClientConnection> clientConnectionList;
 
 
-    public ListenNewClient() {
-        clientNo = 0;
-    }
-
     public ListenNewClient(BlockingQueue<ChatMessage> publishMessageQueue, List<Thread> clientListenThreadList, List<ClientConnection> clientConnectionList) {
         this.publishMessageQueue = publishMessageQueue;
         this.clientListenThreadList = clientListenThreadList;
@@ -45,8 +41,8 @@ public class ListenNewClient implements Runnable {
                 System.out.println("Client " + clientNo + "'s host name is " + inetAddress.getHostName());
                 System.out.println("Client " + clientNo + "'s host name is " + inetAddress.getHostAddress());
 
-                ClientConnection clientConnection = new ClientConnection(socket, inetAddress, clientNo);
-                Thread clientConnectionThread = new Thread(new ClientConnection(socket, inetAddress, clientNo));
+                ClientConnection clientConnection = new ClientConnection(socket, inetAddress, clientNo, publishMessageQueue);
+                Thread clientConnectionThread = new Thread(clientConnection);
 
                 clientConnectionList.add(clientConnection);
                 clientListenThreadList.add(clientConnectionThread);

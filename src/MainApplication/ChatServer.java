@@ -2,6 +2,7 @@ package MainApplication;
 
 import MessageTypes.ChatMessage;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ArrayBlockingQueue;
@@ -21,9 +22,14 @@ public class ChatServer {
 
 
 
-    public void main(){
+    public void main() throws IOException {
+        Thread serverPublisherThread = new Thread(new ServerPublishThread(publishMessageQueue,clientListenThreadList, clientConnectionList));
         Thread listenNewClientThread = new Thread(new ListenNewClient(publishMessageQueue, clientListenThreadList, clientConnectionList));
+
+        serverPublisherThread.start();
         listenNewClientThread.start();
+
+
 
 
     }
