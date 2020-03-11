@@ -8,16 +8,19 @@ import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 
 public class ChatServer {
-    List<Thread> clientConnectionList;
-    BlockingQueue<ChatMessage> publishMessageQueue;
+    private List<Thread> clientListenThreadList;
+    private List<ClientConnection> clientConnectionList;
+    private BlockingQueue<ChatMessage> publishMessageQueue;
+
 
     public ChatServer() {
-        clientConnectionList = new ArrayList<>();
+        clientListenThreadList = new ArrayList<>();
         publishMessageQueue = new ArrayBlockingQueue<>(100);
+        clientConnectionList = new ArrayList<>();
     }
 
     public void main(){
-        Thread listenNewClientThread = new Thread(new ListenNewClient(clientConnectionList));
+        Thread listenNewClientThread = new Thread(new ListenNewClient(publishMessageQueue, clientListenThreadList));
         listenNewClientThread.start();
 
 

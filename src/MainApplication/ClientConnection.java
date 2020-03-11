@@ -7,16 +7,26 @@ import MessageTypes.ChatMessage;
 import java.io.*;
 import java.net.InetAddress;
 import java.net.Socket;
+import java.util.concurrent.BlockingQueue;
 
 public class ClientConnection implements Runnable {
     private Socket socket;
     private InetAddress inetAddress;
     private int clientNo;
 
+    private BlockingQueue<ChatMessage> publishMessageQueue;
+
     public ClientConnection(Socket socket, InetAddress inetAddress, int clientNo){
         this.socket = socket;
         this.inetAddress = inetAddress;
         this.clientNo = clientNo;
+    }
+
+    public ClientConnection(Socket socket, InetAddress inetAddress, int clientNo, BlockingQueue<ChatMessage> publishMessageQueue) {
+        this.socket = socket;
+        this.inetAddress = inetAddress;
+        this.clientNo = clientNo;
+        this.publishMessageQueue = publishMessageQueue;
     }
 
     public Socket getSocket() {
@@ -43,6 +53,8 @@ public class ClientConnection implements Runnable {
                 String message = received.getStringMessage().toString();
                 System.out.println(inetAddress.getHostName() + ": " + message);
                 outputToClient.writeObject(received); //send message back to client
+
+                publishMessageQueue.put(received);
             }
         }
         catch (IOException e) {
@@ -52,10 +64,11 @@ public class ClientConnection implements Runnable {
         catch (ClassNotFoundException e) {
             System.out.println("Class not found exception catched");
         }
+        catch (InterruptedException e) {
+            //e.printStackTrace();
+            System.out.println("Exception from publishMessageQueue");
+        }
     }
 
-    public void pusblishMessage(){
-
-    }
 
 }

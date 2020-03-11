@@ -1,26 +1,39 @@
 package MainApplication;
 
+import MessageTypes.ChatMessage;
+
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.BlockingQueue;
 
 public class ListenNewClient implements Runnable {
     int clientNo;
-    List<Thread> listClientConnections;
+    private BlockingQueue<ChatMessage> publishMessageQueue;
 
-
+    List<Thread> clientListenThreadList;
+    List<ClientConnection> clientConnectionList;
 
 
     public ListenNewClient() {
         clientNo = 0;
     }
 
-    public ListenNewClient(List<Thread> listClientConnections) {
-        this.listClientConnections = listClientConnections;
+    public ListenNewClient(BlockingQueue<ChatMessage> publishMessageQueue, List<Thread> clientListenThreadList) {
+        clientNo = 0;
+        this.publishMessageQueue = publishMessageQueue;
+        this.clientListenThreadList = clientListenThreadList;
+    }
+
+    public ListenNewClient(BlockingQueue<ChatMessage> publishMessageQueue, List<Thread> clientListenThreadList, List<ClientConnection> clientConnectionList) {
+        this.publishMessageQueue = publishMessageQueue;
+        this.clientListenThreadList = clientListenThreadList;
+        this.clientConnectionList = clientConnectionList;
+
+        clientNo = 0;
     }
 
     @Override
@@ -38,8 +51,11 @@ public class ListenNewClient implements Runnable {
                 System.out.println("Client " + clientNo + "'s host name is " + inetAddress.getHostName());
                 System.out.println("Client " + clientNo + "'s host name is " + inetAddress.getHostAddress());
 
+                ClientConnection clientConnection = new ClientConnection(socket, inetAddress, clientNo);
                 Thread clientConnectionThread = new Thread(new ClientConnection(socket, inetAddress, clientNo));
-                listClientConnections.add(clientConnectionThread);
+
+                clientConnectionList.add(clientConnection);
+                clientListenThreadList.add(clientConnectionThread);
                 clientConnectionThread.start();
             }
         } catch (IOException e) {
