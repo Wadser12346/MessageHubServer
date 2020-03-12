@@ -1,12 +1,11 @@
 package MainApplication;
 
-
-
 import MessageTypes.ChatMessage;
 
 import java.io.*;
 import java.net.InetAddress;
 import java.net.Socket;
+import java.util.List;
 import java.util.concurrent.BlockingQueue;
 
 public class ClientConnection implements Runnable {
@@ -16,13 +15,16 @@ public class ClientConnection implements Runnable {
     private Thread thread;
 
     private BlockingQueue<ChatMessage> publishMessageQueue; //passed from ChatServer
+    private List<ClientConnection> clientConnectionList;
 
-    public ClientConnection(Socket socket, InetAddress inetAddress, int clientNo, BlockingQueue<ChatMessage> publishMessageQueue) {
+    public ClientConnection(Socket socket, InetAddress inetAddress, int clientNo, List<ClientConnection> clientConnectionList, BlockingQueue<ChatMessage> publishMessageQueue) {
         this.socket = socket;
         this.inetAddress = inetAddress;
         this.clientNo = clientNo;
         this.publishMessageQueue = publishMessageQueue;
+        this.clientConnectionList = clientConnectionList;
 
+        this.clientConnectionList.add(this);
 
         thread = new Thread(this);
         thread.start();
@@ -44,13 +46,10 @@ public class ClientConnection implements Runnable {
     public void run() {
         try {
             ObjectInputStream inputFromClient = new ObjectInputStream(socket.getInputStream());
-           // ObjectOutputStream outputToClient = new ObjectOutputStream(socket.getOutputStream());
 
             while(true){
                 ChatMessage received = (ChatMessage)inputFromClient.readObject();
-                String message = received.getStringMessage().toString();
-                System.out.println(inetAddress.getHostName() + ": " + message);
-                //outputToClient.writeObject(received); //send message back to client
+                System.out.println("From client: " + received);
 
                 publishMessageQueue.put(received);
             }
@@ -66,6 +65,10 @@ public class ClientConnection implements Runnable {
             //e.printStackTrace();
             System.out.println("Exception from publishMessageQueue");
         }
+        finally {
+            clientConnectionList.remove(this);
+        }
+
     }
 
 

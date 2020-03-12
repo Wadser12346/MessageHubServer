@@ -10,11 +10,8 @@ import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 
 public class ServerPublisher implements Runnable {
-    //TODO: Trim down states that we don't need.
-
     BlockingQueue<ChatMessage> publishMessageQueue;
     private List<ClientConnection> clientConnectionList;
-    private List<ObjectOutputStream> clientOutputStreams;
 
     ObjectOutputStream objectOutputStream;
     int capacity;
@@ -34,10 +31,9 @@ public class ServerPublisher implements Runnable {
     @Override
     public void run() {
         while(true){
-            System.out.println("Producer: ");
             try {
                 ChatMessage toPublish = publishMessageQueue.take();
-                System.out.println(toPublish);
+                System.out.println("Server Publish: " + toPublish);
                 for(int i = 0; i < clientConnectionList.size(); i++){
                     objectOutputStream = new ObjectOutputStream(clientConnectionList.get(i).getSocket().getOutputStream());
                     objectOutputStream.writeObject(toPublish);
@@ -49,8 +45,8 @@ public class ServerPublisher implements Runnable {
                 System.out.println("take interrupted");
             }
             catch(IOException e){
-                System.out.println("IOException caught");
                 e.printStackTrace();
+                System.out.println("IOException caught");
             }
         }
     }

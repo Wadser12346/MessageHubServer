@@ -13,8 +13,7 @@ import java.util.concurrent.BlockingQueue;
 public class ListenNewClient implements Runnable {
     int clientNo;
     private BlockingQueue<ChatMessage> publishMessageQueue; //Only here so this queue can be passed to ClientConnection
-
-    List<ClientConnection> clientConnectionList;
+    private List<ClientConnection> clientConnectionList;
 
     Thread thread;
 
@@ -40,10 +39,10 @@ public class ListenNewClient implements Runnable {
 
                 InetAddress inetAddress = socket.getInetAddress();
                 System.out.println("Client " + clientNo + "'s host name is " + inetAddress.getHostName());
-                System.out.println("Client " + clientNo + "'s host name is " + inetAddress.getHostAddress());
+                System.out.println("Client " + clientNo + "'s host address is " + inetAddress.getHostAddress());
 
-                ClientConnection clientConnection = new ClientConnection(socket, inetAddress, clientNo, publishMessageQueue);
-                clientConnectionList.add(clientConnection);
+                ClientConnection clientConnection = new ClientConnection(socket, inetAddress, clientNo, clientConnectionList, publishMessageQueue);
+//                clientConnectionList.add(clientConnection);
             }
         } catch (IOException e) {
             e.printStackTrace();
