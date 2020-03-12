@@ -56,7 +56,7 @@ public class ClientConnection implements Runnable {
         }
         catch (IOException e) {
 //            e.printStackTrace();
-            System.out.println("Connection lost..");
+            System.out.println("Client " + clientNo + "'s connection lost..");
         }
         catch (ClassNotFoundException e) {
             System.out.println("Class not found exception catched");
