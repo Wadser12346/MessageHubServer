@@ -1,6 +1,6 @@
 package MainApplication;
 
-import MessageFiles.*;
+import MessageTypes.*;
 
 import java.io.*;
 import java.net.InetAddress;
