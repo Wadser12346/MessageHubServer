@@ -23,6 +23,7 @@ public class ClientConnection implements Runnable {
         this.clientNo = clientNo;
         this.publishMessageQueue = publishMessageQueue;
 
+
         thread = new Thread(this);
         thread.start();
     }
@@ -42,7 +43,6 @@ public class ClientConnection implements Runnable {
     @Override
     public void run() {
         try {
-            //TODO: ERROR IS HERE< CHECK INPUT STREAM TYPE
             ObjectInputStream inputFromClient = new ObjectInputStream(socket.getInputStream());
            // ObjectOutputStream outputToClient = new ObjectOutputStream(socket.getOutputStream());
 

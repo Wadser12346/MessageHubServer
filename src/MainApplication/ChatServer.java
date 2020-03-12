@@ -21,11 +21,10 @@ public class ChatServer {
     }
 
     public void main() throws IOException {
-        Thread serverPublisherThread = new Thread(new ServerPublisher(publishMessageQueue,clientListenThreadList, clientConnectionList));
-        Thread listenNewClientThread = new Thread(new ListenNewClient(publishMessageQueue, clientListenThreadList, clientConnectionList));
 
-        serverPublisherThread.start();
-        listenNewClientThread.start();
+        ServerPublisher serverPublisher = new ServerPublisher(publishMessageQueue,clientConnectionList);
+        ListenNewClient listenNewClient = new ListenNewClient(publishMessageQueue, clientConnectionList);
+
 
     }
 }

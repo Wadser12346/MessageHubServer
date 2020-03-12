@@ -14,16 +14,17 @@ public class ListenNewClient implements Runnable {
     int clientNo;
     private BlockingQueue<ChatMessage> publishMessageQueue; //Only here so this queue can be passed to ClientConnection
 
-    List<Thread> clientListenThreadList;
     List<ClientConnection> clientConnectionList;
 
+    Thread thread;
 
-    public ListenNewClient(BlockingQueue<ChatMessage> publishMessageQueue, List<Thread> clientListenThreadList, List<ClientConnection> clientConnectionList) {
+    public ListenNewClient(BlockingQueue<ChatMessage> publishMessageQueue, List<ClientConnection> clientConnectionList) {
         this.publishMessageQueue = publishMessageQueue;
-        this.clientListenThreadList = clientListenThreadList;
         this.clientConnectionList = clientConnectionList;
 
         clientNo = 0;
+        thread = new Thread(this);
+        thread.start();
     }
 
     @Override
@@ -42,11 +43,7 @@ public class ListenNewClient implements Runnable {
                 System.out.println("Client " + clientNo + "'s host name is " + inetAddress.getHostAddress());
 
                 ClientConnection clientConnection = new ClientConnection(socket, inetAddress, clientNo, publishMessageQueue);
-//                Thread clientConnectionThread = new Thread(clientConnection);
-
                 clientConnectionList.add(clientConnection);
-//                clientListenThreadList.add(clientConnectionThread);
-//                clientConnectionThread.start();
             }
         } catch (IOException e) {
             e.printStackTrace();
