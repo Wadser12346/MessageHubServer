@@ -9,7 +9,11 @@ import java.util.List;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 
-public class ServerPublishThread implements Runnable {
+public class ServerPublisher implements Runnable {
+    //TODO: Trim down states that we don't need.
+
+    //These lists are passed from ChatServer.
+
     BlockingQueue<ChatMessage> publishMessageQueue;
     private List<Thread> clientListenThreadList; //THREAD OR CLIENTCONNECTION?????
     private List<ClientConnection> clientConnectionList;
@@ -19,7 +23,7 @@ public class ServerPublishThread implements Runnable {
     ObjectOutputStream objectOutputStream;
     int capacity;
 
-    public ServerPublishThread(BlockingQueue<ChatMessage> publishMessageQueue ,List<Thread> clientListenThreadList, List<ClientConnection> clientConnectionList) throws IOException {
+    public ServerPublisher(BlockingQueue<ChatMessage> publishMessageQueue , List<Thread> clientListenThreadList, List<ClientConnection> clientConnectionList) throws IOException {
         capacity = 100;
 
         this.publishMessageQueue = publishMessageQueue;

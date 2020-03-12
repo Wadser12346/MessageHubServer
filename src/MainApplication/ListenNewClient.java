@@ -12,7 +12,7 @@ import java.util.concurrent.BlockingQueue;
 
 public class ListenNewClient implements Runnable {
     int clientNo;
-    private BlockingQueue<ChatMessage> publishMessageQueue;
+    private BlockingQueue<ChatMessage> publishMessageQueue; //Only here so this queue can be passed to ClientConnection
 
     List<Thread> clientListenThreadList;
     List<ClientConnection> clientConnectionList;
@@ -42,11 +42,11 @@ public class ListenNewClient implements Runnable {
                 System.out.println("Client " + clientNo + "'s host name is " + inetAddress.getHostAddress());
 
                 ClientConnection clientConnection = new ClientConnection(socket, inetAddress, clientNo, publishMessageQueue);
-                Thread clientConnectionThread = new Thread(clientConnection);
+//                Thread clientConnectionThread = new Thread(clientConnection);
 
                 clientConnectionList.add(clientConnection);
-                clientListenThreadList.add(clientConnectionThread);
-                clientConnectionThread.start();
+//                clientListenThreadList.add(clientConnectionThread);
+//                clientConnectionThread.start();
             }
         } catch (IOException e) {
             e.printStackTrace();

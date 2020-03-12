@@ -13,20 +13,18 @@ public class ClientConnection implements Runnable {
     private Socket socket;
     private InetAddress inetAddress;
     private int clientNo;
+    private Thread thread;
 
-    private BlockingQueue<ChatMessage> publishMessageQueue;
-
-    public ClientConnection(Socket socket, InetAddress inetAddress, int clientNo){
-        this.socket = socket;
-        this.inetAddress = inetAddress;
-        this.clientNo = clientNo;
-    }
+    private BlockingQueue<ChatMessage> publishMessageQueue; //passed from ChatServer
 
     public ClientConnection(Socket socket, InetAddress inetAddress, int clientNo, BlockingQueue<ChatMessage> publishMessageQueue) {
         this.socket = socket;
         this.inetAddress = inetAddress;
         this.clientNo = clientNo;
         this.publishMessageQueue = publishMessageQueue;
+
+        thread = new Thread(this);
+        thread.start();
     }
 
     public Socket getSocket() {
