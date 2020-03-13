@@ -2,11 +2,10 @@ package MainApplication;
 
 import MessageTypes.ChatMessage;
 
-import java.io.IOException;
-import java.io.ObjectOutputStream;
-import java.util.ArrayList;
+import java.io.*;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
-import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 
 public class ServerPublisher implements Runnable {
@@ -30,24 +29,43 @@ public class ServerPublisher implements Runnable {
 
     @Override
     public void run() {
-        while(true){
-            try {
-                ChatMessage toPublish = publishMessageQueue.take();
-                System.out.println("Server Publish: " + toPublish);
-                for(int i = 0; i < clientConnectionList.size(); i++){
-                    objectOutputStream = new ObjectOutputStream(clientConnectionList.get(i).getSocket().getOutputStream());
-                    objectOutputStream.writeObject(toPublish);
+        Date date = new Date();
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        File logFile = new File(dateFormat.format(date) + ".txt");
+        try {
+            FileWriter fw = new FileWriter(logFile, true);
+            PrintWriter printWriter = new PrintWriter(fw);
+            printWriter.print("Server Publish started at " + new Date() + '\n');
+            printWriter.flush();
+            while(true){
+                try {
+                    ChatMessage toPublish = publishMessageQueue.take();
+                    System.out.println("Server Publish: " + toPublish);
+                    printWriter.print("Server Publish: " + toPublish + '\n');
+                    printWriter.flush();
+                    for(int i = 0; i < clientConnectionList.size(); i++){
+                        objectOutputStream = new ObjectOutputStream(clientConnectionList.get(i).getSocket().getOutputStream());
+                        objectOutputStream.writeObject(toPublish);
+                    }
                 }
+                catch (InterruptedException e) {
+                    e.printStackTrace();
+                    System.out.println("take interrupted");
+                }
+                catch(IOException e){
+                    e.printStackTrace();
+                    System.out.println("IOException caught");
+                }
+            }
 
-            }
-            catch (InterruptedException e) {
-                e.printStackTrace();
-                System.out.println("take interrupted");
-            }
-            catch(IOException e){
-                e.printStackTrace();
-                System.out.println("IOException caught");
-            }
         }
+        catch (IOException e) {
+            e.printStackTrace();
+        }
+
+
+
+
+
     }
 }
