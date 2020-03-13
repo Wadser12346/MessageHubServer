@@ -3,6 +3,7 @@ package MainApplication;
 import MessageTypes.ChatMessage;
 
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -15,11 +16,22 @@ public class ListenNewClient implements Runnable {
     private BlockingQueue<ChatMessage> publishMessageQueue; //Only here so this queue can be passed to ClientConnection
     private List<ClientConnection> clientConnectionList;
 
-    Thread thread;
+    private Thread thread;
+    private PrintWriter printWriter;
 
     public ListenNewClient(BlockingQueue<ChatMessage> publishMessageQueue, List<ClientConnection> clientConnectionList) {
         this.publishMessageQueue = publishMessageQueue;
         this.clientConnectionList = clientConnectionList;
+
+        clientNo = 0;
+        thread = new Thread(this);
+        thread.start();
+    }
+
+    public ListenNewClient(BlockingQueue<ChatMessage> publishMessageQueue, List<ClientConnection> clientConnectionList, PrintWriter printWriter) {
+        this.publishMessageQueue = publishMessageQueue;
+        this.clientConnectionList = clientConnectionList;
+        this.printWriter = printWriter;
 
         clientNo = 0;
         thread = new Thread(this);
@@ -41,8 +53,7 @@ public class ListenNewClient implements Runnable {
                 System.out.println("Client " + clientNo + "'s host name is " + inetAddress.getHostName());
                 System.out.println("Client " + clientNo + "'s host address is " + inetAddress.getHostAddress());
 
-                ClientConnection clientConnection = new ClientConnection(socket, inetAddress, clientNo, clientConnectionList, publishMessageQueue);
-//                clientConnectionList.add(clientConnection);
+                ClientConnection clientConnection = new ClientConnection(socket, inetAddress, clientNo, clientConnectionList, publishMessageQueue, printWriter);
             }
         } catch (IOException e) {
             e.printStackTrace();

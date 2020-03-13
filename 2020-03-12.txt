@@ -1,3 +1,13 @@
 Server Publish started at Thu Mar 12 18:04:16 PDT 2020
 Server Publish: client: chat1:Test form client1null
 Server Publish: client: chat1:jjjsnull
+Server Publish started at Thu Mar 12 18:18:31 PDT 2020
+Server Publish: client: chat1:MoreStuff from first clientnull
+Server Publish: client: chat1:more and morenull
+Server Publish started at Thu Mar 12 18:28:22 PDT 2020
+Server Publish: client: chat1:fffffnull
+Server Publish started at Thu Mar 12 19:34:55 PDT 2020
+Server Publish: client: chat1:Start from Classnull
+Server Publish: client: chat1:hello therenull
+Server Publish: client: chat1:sssdnull
+Server Publish: client: chat1:Nonull

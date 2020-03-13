@@ -2,8 +2,13 @@ package MainApplication;
 
 import MessageTypes.ChatMessage;
 
+import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.io.PrintWriter;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Scanner;
 import java.util.concurrent.ArrayBlockingQueue;
@@ -13,8 +18,10 @@ public class ChatServer {
     private List<ClientConnection> clientConnectionList;
     private BlockingQueue<ChatMessage> publishMessageQueue;
 
-    ServerPublisher serverPublisher;
-    ListenNewClient listenNewClient;
+    private ServerPublisher serverPublisher;
+    private ListenNewClient listenNewClient;
+    private PrintWriter printWriter;
+
 
     public ChatServer() {
         publishMessageQueue = new ArrayBlockingQueue<>(100);
@@ -22,8 +29,13 @@ public class ChatServer {
     }
 
     public void main() throws IOException {
-        serverPublisher = new ServerPublisher(publishMessageQueue,clientConnectionList);
-        listenNewClient = new ListenNewClient(publishMessageQueue, clientConnectionList);
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        File logFile = new File(dateFormat.format(new Date()) + ".txt");
+        FileWriter fw = new FileWriter(logFile, true);
+        printWriter = new PrintWriter(fw);
+
+        serverPublisher = new ServerPublisher(publishMessageQueue,clientConnectionList, printWriter);
+        listenNewClient = new ListenNewClient(publishMessageQueue, clientConnectionList, printWriter);
 
         Scanner in = new Scanner(System.in);
         int num = 1;

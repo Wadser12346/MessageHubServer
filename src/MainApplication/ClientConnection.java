@@ -12,6 +12,7 @@ public class ClientConnection implements Runnable {
     private Socket socket;
     private InetAddress inetAddress;
     private int clientNo;
+    private PrintWriter printWriter;
     private Thread thread;
 
     private BlockingQueue<ChatMessage> publishMessageQueue; //passed from ChatServer
@@ -25,6 +26,18 @@ public class ClientConnection implements Runnable {
         this.clientConnectionList = clientConnectionList;
 
         this.clientConnectionList.add(this);
+
+        thread = new Thread(this);
+        thread.start();
+    }
+
+    public ClientConnection(Socket socket, InetAddress inetAddress, int clientNo, List<ClientConnection> clientConnectionList, BlockingQueue<ChatMessage> publishMessageQueue,  PrintWriter printWriter) {
+        this.socket = socket;
+        this.inetAddress = inetAddress;
+        this.clientNo = clientNo;
+        this.printWriter = printWriter;
+        this.publishMessageQueue = publishMessageQueue;
+        this.clientConnectionList = clientConnectionList;
 
         thread = new Thread(this);
         thread.start();
@@ -56,7 +69,9 @@ public class ClientConnection implements Runnable {
         }
         catch (IOException e) {
 //            e.printStackTrace();
-            System.out.println("Client " + clientNo + "'s connection lost..");
+            String msg = new String("Client " + clientNo + "'s connection lost..");
+            System.out.println(msg);
+            printWriter.println(msg);
         }
         catch (ClassNotFoundException e) {
             System.out.println("Class not found exception catched");
