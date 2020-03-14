@@ -1,6 +1,9 @@
 package MainApplication;
 
 import MessageTypes.ChatMessage;
+import javafx.application.Platform;
+import javafx.scene.control.TextArea;
+
 
 import java.io.*;
 import java.net.InetAddress;
@@ -18,14 +21,14 @@ public class ClientConnection implements Runnable {
     private BlockingQueue<ChatMessage> publishMessageQueue; //passed from ChatServer
     private List<ClientConnection> clientConnectionList;
 
+    private TextArea chatLogTextArea;
+
     public ClientConnection(Socket socket, InetAddress inetAddress, int clientNo, List<ClientConnection> clientConnectionList, BlockingQueue<ChatMessage> publishMessageQueue) {
         this.socket = socket;
         this.inetAddress = inetAddress;
         this.clientNo = clientNo;
         this.publishMessageQueue = publishMessageQueue;
         this.clientConnectionList = clientConnectionList;
-
-        this.clientConnectionList.add(this);
 
         thread = new Thread(this);
         thread.start();
@@ -39,8 +42,14 @@ public class ClientConnection implements Runnable {
         this.publishMessageQueue = publishMessageQueue;
         this.clientConnectionList = clientConnectionList;
 
+        this.clientConnectionList.add(this);
         thread = new Thread(this);
         thread.start();
+        System.out.println("Client Connection thread start");
+    }
+
+    public void setTextArea(TextArea ta){
+        chatLogTextArea = ta;
     }
 
     public Socket getSocket() {
@@ -62,8 +71,11 @@ public class ClientConnection implements Runnable {
 
             while(true){
                 ChatMessage received = (ChatMessage)inputFromClient.readObject();
+                String msg = new String("From client: " + received + '\n');
                 System.out.println("From client: " + received);
-
+//                Platform.runLater(() ->
+//                        chatLogTextArea.appendText("From Client " + received + '\n'));
+                WriteUI.writeToChatLog(msg);
                 publishMessageQueue.put(received);
             }
         }
@@ -77,7 +89,6 @@ public class ClientConnection implements Runnable {
             System.out.println("Class not found exception catched");
         }
         catch (InterruptedException e) {
-            //e.printStackTrace();
             System.out.println("Exception from publishMessageQueue");
         }
         finally {

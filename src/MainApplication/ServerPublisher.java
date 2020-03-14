@@ -1,6 +1,8 @@
 package MainApplication;
 
 import MessageTypes.ChatMessage;
+import javafx.application.Platform;
+import javafx.scene.control.TextArea;
 
 import java.io.*;
 import java.text.SimpleDateFormat;
@@ -17,6 +19,7 @@ public class ServerPublisher implements Runnable {
     private Thread thread;
 
     private PrintWriter printWriter;
+    private TextArea chatLogTextArea;
 
     public ServerPublisher(BlockingQueue<ChatMessage> publishMessageQueue, List<ClientConnection> clientConnectionList) {
         capacity = 100;
@@ -37,17 +40,26 @@ public class ServerPublisher implements Runnable {
 
         thread = new Thread(this);
         thread.start();
+        System.out.println("ServerPublisher Thread start");
+    }
+
+    public void setTextArea(TextArea ta){
+        chatLogTextArea = ta;
     }
 
     @Override
     public void run() {
         printWriter.print("Server Publish started at " + new Date() + '\n');
+        Platform.runLater(()->
+                chatLogTextArea.appendText("Server Publish started at " + new Date() + '\n'));
         printWriter.flush();
         while(true){
             try {
                 ChatMessage toPublish = publishMessageQueue.take();
                 System.out.println("Server Publish: " + toPublish);
                 printWriter.print("Server Publish: " + toPublish + '\n');
+                Platform.runLater(()->
+                        chatLogTextArea.appendText("Server Publish: " + toPublish + '\n'));
                 printWriter.flush();
                 for(int i = 0; i < clientConnectionList.size(); i++){
                     objectOutputStream = new ObjectOutputStream(clientConnectionList.get(i).getSocket().getOutputStream());

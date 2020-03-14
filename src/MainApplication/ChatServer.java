@@ -1,6 +1,7 @@
 package MainApplication;
 
 import MessageTypes.ChatMessage;
+import javafx.scene.control.TextArea;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -14,18 +15,23 @@ import java.util.Scanner;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 
-public class ChatServer {
+public class ChatServer implements Runnable {
     private List<ClientConnection> clientConnectionList;
     private BlockingQueue<ChatMessage> publishMessageQueue;
 
     private ServerPublisher serverPublisher;
     private ListenNewClient listenNewClient;
     private PrintWriter printWriter;
+    private Thread thread;
 
+    private TextArea chatLogTextArea;
 
     public ChatServer() {
         publishMessageQueue = new ArrayBlockingQueue<>(100);
         clientConnectionList = new ArrayList<>();
+
+        thread = new Thread(this);
+        thread.start();
     }
 
     public void main() throws IOException {
@@ -36,6 +42,10 @@ public class ChatServer {
 
         serverPublisher = new ServerPublisher(publishMessageQueue,clientConnectionList, printWriter);
         listenNewClient = new ListenNewClient(publishMessageQueue, clientConnectionList, printWriter);
+
+
+        serverPublisher.setTextArea(chatLogTextArea);
+        listenNewClient.setTextArea(chatLogTextArea);
 
         Scanner in = new Scanner(System.in);
         int num = 1;
@@ -54,5 +64,18 @@ public class ChatServer {
 
     public void printListClientConnection(){
         System.out.println(clientConnectionList);
+    }
+
+    public void setTextArea(TextArea ta){
+        chatLogTextArea = ta;
+    }
+
+    @Override
+    public void run() {
+        try {
+            main();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }
