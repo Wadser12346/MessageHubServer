@@ -31,7 +31,7 @@ public class ServerPublisher implements Runnable {
     public void run() {
         Date date = new Date();
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-        File logFile = new File(dateFormat.format(date) + ".txt");
+        File logFile = new File("out/production/MessageHubServer" + dateFormat.format(date) + ".txt");
         try {
             FileWriter fw = new FileWriter(logFile, true);
             PrintWriter printWriter = new PrintWriter(fw);
