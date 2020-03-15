@@ -7,10 +7,9 @@
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.text.Font?>
 
-
-<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="MainApplication.Controller.ServerController">
+<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1">
    <children>
-      <TextArea layoutX="21.0" layoutY="91.0" prefHeight="289.0" prefWidth="558.0" />
+      <TextArea fx:id="serverLogTextArea" layoutX="21.0" layoutY="91.0" prefHeight="289.0" prefWidth="558.0" />
       <Label layoutX="262.0" layoutY="13.0" text="UsChat">
          <font>
             <Font size="24.0" />
@@ -21,7 +20,7 @@
             <Label text="ServerIP:" BorderPane.alignment="CENTER" />
          </left>
          <right>
-            <TextField alignment="CENTER" editable="false" prefHeight="25.0" prefWidth="192.0" promptText="IP NAME" BorderPane.alignment="CENTER" />
+            <TextField fx:id="serverIPTextField" alignment="CENTER" editable="false" prefHeight="25.0" prefWidth="192.0" promptText="IP NAME" BorderPane.alignment="CENTER" />
          </right>
       </BorderPane>
    </children>

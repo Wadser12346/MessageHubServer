@@ -1,8 +1,11 @@
 package MainApplication;
 
 import MessageTypes.ChatMessage;
+import javafx.application.Platform;
+import javafx.scene.control.TextArea;
 
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -15,7 +18,9 @@ public class ListenNewClient implements Runnable {
     private BlockingQueue<ChatMessage> publishMessageQueue; //Only here so this queue can be passed to ClientConnection
     private List<ClientConnection> clientConnectionList;
 
-    Thread thread;
+    private Thread thread;
+    private PrintWriter printWriter;
+    private TextArea chatLogTextArea;
 
     public ListenNewClient(BlockingQueue<ChatMessage> publishMessageQueue, List<ClientConnection> clientConnectionList) {
         this.publishMessageQueue = publishMessageQueue;
@@ -24,6 +29,21 @@ public class ListenNewClient implements Runnable {
         clientNo = 0;
         thread = new Thread(this);
         thread.start();
+    }
+
+    public ListenNewClient(BlockingQueue<ChatMessage> publishMessageQueue, List<ClientConnection> clientConnectionList, PrintWriter printWriter) {
+        this.publishMessageQueue = publishMessageQueue;
+        this.clientConnectionList = clientConnectionList;
+        this.printWriter = printWriter;
+
+        clientNo = 0;
+        thread = new Thread(this);
+        thread.start();
+        System.out.println("ListenNewClient Thread start");
+    }
+
+    public void setTextArea(TextArea ta){
+        chatLogTextArea = ta;
     }
 
     @Override
@@ -36,13 +56,18 @@ public class ListenNewClient implements Runnable {
                 Socket socket = serverSocket.accept();
                 clientNo++;
                 System.out.println("Starting thread for client " + clientNo + " at " + new Date() + '\n');
+                Platform.runLater(()->
+                        chatLogTextArea.appendText("Starting thread for client " +  clientNo + " at " + new Date() + '\n'));
 
                 InetAddress inetAddress = socket.getInetAddress();
                 System.out.println("Client " + clientNo + "'s host name is " + inetAddress.getHostName());
+                Platform.runLater(()->
+                        chatLogTextArea.appendText("Client " + clientNo + "'s host name is " + inetAddress.getHostName() + '\n'));
                 System.out.println("Client " + clientNo + "'s host address is " + inetAddress.getHostAddress());
-
-                ClientConnection clientConnection = new ClientConnection(socket, inetAddress, clientNo, clientConnectionList, publishMessageQueue);
-//                clientConnectionList.add(clientConnection);
+                Platform.runLater(()->
+                        chatLogTextArea.appendText("Client " + clientNo + "'s host address is " + inetAddress.getHostAddress() + '\n'));
+                ClientConnection clientConnection = new ClientConnection(socket, inetAddress, clientNo, clientConnectionList, publishMessageQueue, printWriter);
+                clientConnection.setTextArea(chatLogTextArea);
             }
         } catch (IOException e) {
             e.printStackTrace();
