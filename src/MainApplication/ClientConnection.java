@@ -14,6 +14,8 @@ import java.util.concurrent.BlockingQueue;
 public class ClientConnection implements Runnable {
     private Socket socket;
     private InetAddress inetAddress;
+    private ObjectOutputStream objectOutputStream;
+
     private int clientNo;
     private PrintWriter printWriter;
     private Thread thread;
@@ -64,10 +66,15 @@ public class ClientConnection implements Runnable {
         return clientNo;
     }
 
+    public ObjectOutputStream getObjectOutputStream() {
+        return objectOutputStream;
+    }
+
     @Override
     public void run() {
         try {
             ObjectInputStream inputFromClient = new ObjectInputStream(socket.getInputStream());
+            this.objectOutputStream = new ObjectOutputStream(socket.getOutputStream());
 
             while(true){
                 ChatMessage received = (ChatMessage)inputFromClient.readObject();

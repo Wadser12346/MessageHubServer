@@ -62,8 +62,9 @@ public class ServerPublisher implements Runnable {
                         chatLogTextArea.appendText("Server Publish: " + toPublish + '\n'));
                 printWriter.flush();
                 for(int i = 0; i < clientConnectionList.size(); i++){
-                    objectOutputStream = new ObjectOutputStream(clientConnectionList.get(i).getSocket().getOutputStream());
-                    objectOutputStream.writeObject(toPublish);
+//                    objectOutputStream = new ObjectOutputStream(clientConnectionList.get(i).getSocket().getOutputStream());
+//                    objectOutputStream.writeObject(toPublish);
+                    clientConnectionList.get(i).getObjectOutputStream().writeObject(toPublish);
                 }
             }
             catch (InterruptedException e) {
