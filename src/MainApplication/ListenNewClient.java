@@ -1,8 +1,9 @@
 package MainApplication;
 
+import CS4B.Messages.ChatMessage;
 import MainApplication.Observer.ChatLogicObserver;
 import MainApplication.Observer.ChatLogicSubject;
-import MessageTypes.ChatMessage;
+
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.InetAddress;
@@ -12,6 +13,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.BlockingQueue;
+
 
 public class ListenNewClient implements Runnable, ChatLogicSubject {
     private List<ChatLogicObserver> chatLogicObservers;

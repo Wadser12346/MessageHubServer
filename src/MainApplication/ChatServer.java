@@ -1,8 +1,9 @@
 package MainApplication;
 
+import CS4B.Messages.ChatMessage;
 import MainApplication.Observer.ChatLogicObserver;
 import MainApplication.Observer.ChatLogicSubject;
-import MessageTypes.ChatMessage;
+
 import javafx.scene.control.TextArea;
 
 import java.io.File;
