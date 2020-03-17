@@ -28,8 +28,6 @@ public class ChatServer implements Runnable, ChatLogicSubject {
     private PrintWriter printWriter;
     private Thread thread;
 
-    private TextArea chatLogTextArea;
-
     public ChatServer() {
         publishMessageQueue = new ArrayBlockingQueue<>(100);
         clientConnectionList = new ArrayList<>();
@@ -55,9 +53,7 @@ public class ChatServer implements Runnable, ChatLogicSubject {
             serverPublisher.addObserver(chatLogicObservers.get(i));
             listenNewClient.addObserver(chatLogicObservers.get(i));
         }
-
-
-        notifyObserverText("HELLO CHAT SERVER OBSERVER");
+        notifyObserverText("Chat Server test notifyObserver");
 
         Scanner in = new Scanner(System.in);
         int num = 1;
@@ -76,10 +72,6 @@ public class ChatServer implements Runnable, ChatLogicSubject {
 
     public void printListClientConnection(){
         System.out.println(clientConnectionList);
-    }
-
-    public void setTextArea(TextArea ta){
-        chatLogTextArea = ta;
     }
 
     @Override

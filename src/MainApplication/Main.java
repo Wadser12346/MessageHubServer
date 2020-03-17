@@ -15,25 +15,22 @@ public class Main extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
-        UIServerController UIServerController = new UIServerController();
+        UIServerController uiServerController = new UIServerController();
         FXMLLoader loader = new FXMLLoader(getClass().getResource("FXML/Server.fxml"));
-        loader.setController(UIServerController);
+        loader.setController(uiServerController);
         Parent serverUI =loader.load();
 
 //        Parent root = FXMLLoader.load(getClass().getResource("FXML/Server.fxml"));
         primaryStage.setTitle("SERVER");
         primaryStage.setScene(new Scene(serverUI));
 
-        primaryStage.show();
-
         ChatServer chatServer = new ChatServer();
-        chatServer.setTextArea(UIServerController.getServerLogTextArea());
-        UIServerController.setServerIPText();
-        WriteUI.setChatLogTextArea(UIServerController.getServerLogTextArea());
+        uiServerController.setServerIPText();
+        WriteUI.setChatLogTextArea(uiServerController.getServerLogTextArea());
 
-        chatServer.addObserver(UIServerController);
+        chatServer.addObserver(uiServerController);
 
-
+        primaryStage.show();
     }
 
     public static void main(String[] args) {
