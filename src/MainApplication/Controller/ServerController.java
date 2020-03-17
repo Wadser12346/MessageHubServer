@@ -1,5 +1,6 @@
 package MainApplication.Controller;
 
+import MainApplication.Observer.ChatLogicObserver;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
@@ -9,7 +10,7 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 
 
-public class ServerController {
+public class ServerController implements ChatLogicObserver {
 
     @FXML
     private TextArea serverLogTextArea;
@@ -28,4 +29,8 @@ public class ServerController {
         serverIPTextField.setText(InetAddress.getLocalHost().getHostAddress());
     }
 
+    @Override
+    public void onTextNotification(String message) {
+        serverLogTextArea.appendText(message);
+    }
 }
