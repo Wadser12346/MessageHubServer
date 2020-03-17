@@ -17,7 +17,8 @@ import java.util.Scanner;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 
-public class ChatServer implements Runnable {
+public class ChatServer implements Runnable, ChatLogicSubject {
+    private List<ChatLogicObserver> chatLogicObservers;
 
     private List<ClientConnection> clientConnectionList;
     private BlockingQueue<ChatMessage> publishMessageQueue;
@@ -36,6 +37,7 @@ public class ChatServer implements Runnable {
         thread = new Thread(this);
         thread.start();
 
+        chatLogicObservers = new ArrayList<>();
     }
 
     public void main() throws IOException {
@@ -51,6 +53,7 @@ public class ChatServer implements Runnable {
         serverPublisher.setTextArea(chatLogTextArea);
         listenNewClient.setTextArea(chatLogTextArea);
 
+        notifyObserverText("HELLO CHAT SERVER OBSERVER");
 
         Scanner in = new Scanner(System.in);
         int num = 1;
@@ -84,4 +87,21 @@ public class ChatServer implements Runnable {
         }
     }
 
+    @Override
+    public void addObserver(ChatLogicObserver obs) {
+        chatLogicObservers.add(obs);
+    }
+
+    @Override
+    public void removeObserver(ChatLogicObserver obs) {
+        chatLogicObservers.remove(obs);
+    }
+
+    @Override
+    public void notifyObserverText(String message) {
+        for(int i = 0; i < chatLogicObservers.size(); i++){
+            chatLogicObservers.get(i).onTextNotification(message);
+        }
+
+    }
 }
