@@ -1,17 +1,12 @@
 package MainApplication;
 
-import MainApplication.Controller.ServerController;
-import MainApplication.Observer.ChatLogicObserver;
+import MainApplication.Controller.UIServerController;
 import javafx.application.Application;
-import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.TextArea;
 import javafx.stage.Stage;
-
-import java.io.IOException;
-import java.net.InetAddress;
 
 
 public class Main extends Application {
@@ -21,9 +16,9 @@ public class Main extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
-        ServerController serverController = new ServerController();
+        UIServerController UIServerController = new UIServerController();
         FXMLLoader loader = new FXMLLoader(getClass().getResource("FXML/Server.fxml"));
-        loader.setController(serverController);
+        loader.setController(UIServerController);
         Parent serverUI =loader.load();
 
 //        Parent root = FXMLLoader.load(getClass().getResource("FXML/Server.fxml"));
@@ -33,11 +28,12 @@ public class Main extends Application {
         primaryStage.show();
 
         ChatServer chatServer = new ChatServer();
-        chatServer.setTextArea(serverController.getServerLogTextArea());
-        serverController.setServerIPText();
-        WriteUI.setChatLogTextArea(serverController.getServerLogTextArea());
+        chatServer.setTextArea(UIServerController.getServerLogTextArea());
+        UIServerController.setServerIPText();
+        WriteUI.setChatLogTextArea(UIServerController.getServerLogTextArea());
 
-        textArea = serverController.getServerLogTextArea();
+        textArea = UIServerController.getServerLogTextArea();
+        chatServer.addObserver(UIServerController);
 
 
     }

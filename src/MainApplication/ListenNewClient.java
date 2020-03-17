@@ -1,5 +1,7 @@
 package MainApplication;
 
+import MainApplication.Observer.ChatLogicObserver;
+import MainApplication.Observer.ChatLogicSubject;
 import MessageTypes.ChatMessage;
 import javafx.application.Platform;
 import javafx.scene.control.TextArea;
@@ -9,41 +11,32 @@ import java.io.PrintWriter;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.BlockingQueue;
 
-public class ListenNewClient implements Runnable {
+public class ListenNewClient implements Runnable, ChatLogicSubject {
+    private List<ChatLogicObserver> chatLogicObservers;
+
     int clientNo;
     private BlockingQueue<ChatMessage> publishMessageQueue; //Only here so this queue can be passed to ClientConnection
     private List<ClientConnection> clientConnectionList;
 
     private Thread thread;
     private PrintWriter printWriter;
-    private TextArea chatLogTextArea;
 
-    public ListenNewClient(BlockingQueue<ChatMessage> publishMessageQueue, List<ClientConnection> clientConnectionList) {
-        this.publishMessageQueue = publishMessageQueue;
-        this.clientConnectionList = clientConnectionList;
-
-        clientNo = 0;
-        thread = new Thread(this);
-        thread.start();
-    }
 
     public ListenNewClient(BlockingQueue<ChatMessage> publishMessageQueue, List<ClientConnection> clientConnectionList, PrintWriter printWriter) {
         this.publishMessageQueue = publishMessageQueue;
         this.clientConnectionList = clientConnectionList;
         this.printWriter = printWriter;
+        chatLogicObservers = new ArrayList<>();
 
         clientNo = 0;
         thread = new Thread(this);
         thread.start();
         System.out.println("ListenNewClient Thread start");
-    }
-
-    public void setTextArea(TextArea ta){
-        chatLogTextArea = ta;
     }
 
     @Override
@@ -55,23 +48,41 @@ public class ListenNewClient implements Runnable {
             while(true){
                 Socket socket = serverSocket.accept();
                 clientNo++;
-                System.out.println("Starting thread for client " + clientNo + " at " + new Date() + '\n');
-                Platform.runLater(()->
-                        chatLogTextArea.appendText("Starting thread for client " +  clientNo + " at " + new Date() + '\n'));
+                String startingMessage = "Starting thread for client " + clientNo + " at " + new Date() + '\n';
+
+                System.out.println(startingMessage);
+                notifyObserverText(startingMessage);
 
                 InetAddress inetAddress = socket.getInetAddress();
-                System.out.println("Client " + clientNo + "'s host name is " + inetAddress.getHostName());
-                Platform.runLater(()->
-                        chatLogTextArea.appendText("Client " + clientNo + "'s host name is " + inetAddress.getHostName() + '\n'));
-                System.out.println("Client " + clientNo + "'s host address is " + inetAddress.getHostAddress());
-                Platform.runLater(()->
-                        chatLogTextArea.appendText("Client " + clientNo + "'s host address is " + inetAddress.getHostAddress() + '\n'));
+                String clientInfoMessage = "Client " + clientNo + "'s host name is " + inetAddress.getHostName() + '\n'
+                        + "Client " + clientNo + "'s host address is " + inetAddress.getHostAddress() + '\n';
+                System.out.println(clientInfoMessage);
+
                 ClientConnection clientConnection = new ClientConnection(socket, inetAddress, clientNo, clientConnectionList, publishMessageQueue, printWriter);
-                clientConnection.setTextArea(chatLogTextArea);
+
+                for(int i = 0; i < chatLogicObservers.size(); i++){
+                    clientConnection.addObserver(chatLogicObservers.get(i));
+                }
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
+    @Override
+    public void addObserver(ChatLogicObserver obs) {
+        chatLogicObservers.add(obs);
+    }
+
+    @Override
+    public void removeObserver(ChatLogicObserver obs) {
+        chatLogicObservers.remove(obs);
+    }
+
+    @Override
+    public void notifyObserverText(String message) {
+        for(int i = 0; i < chatLogicObservers.size(); i++){
+            chatLogicObservers.get(i).onTextNotification(message);
+        }
+    }
 }

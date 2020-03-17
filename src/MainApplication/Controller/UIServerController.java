@@ -10,7 +10,7 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 
 
-public class ServerController implements ChatLogicObserver {
+public class UIServerController implements ChatLogicObserver {
 
     @FXML
     private TextArea serverLogTextArea;

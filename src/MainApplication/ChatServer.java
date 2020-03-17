@@ -50,6 +50,12 @@ public class ChatServer implements Runnable, ChatLogicSubject {
         serverPublisher = new ServerPublisher(publishMessageQueue,clientConnectionList, printWriter);
         listenNewClient = new ListenNewClient(publishMessageQueue, clientConnectionList, printWriter);
 
+        //add observers
+        for(int i = 0; i < chatLogicObservers.size(); i++){
+            serverPublisher.addObserver(chatLogicObservers.get(i));
+            listenNewClient.addObserver(chatLogicObservers.get(i));
+        }
+
 
         serverPublisher.setTextArea(chatLogTextArea);
         listenNewClient.setTextArea(chatLogTextArea);
