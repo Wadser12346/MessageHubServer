@@ -8,6 +8,7 @@ import javafx.scene.control.TextArea;
 
 import java.io.*;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.BlockingQueue;
@@ -23,18 +24,6 @@ public class ServerPublisher implements Runnable, ChatLogicSubject {
     private Thread thread;
 
     private PrintWriter printWriter;
-    private TextArea chatLogTextArea;
-
-    public ServerPublisher(BlockingQueue<ChatMessage> publishMessageQueue, List<ClientConnection> clientConnectionList) {
-        capacity = 100;
-
-        this.publishMessageQueue = publishMessageQueue;
-        this.clientConnectionList = clientConnectionList;
-
-        objectOutputStream = null;
-        thread = new Thread(this);
-        thread.start();
-    }
 
     public ServerPublisher(BlockingQueue<ChatMessage> publishMessageQueue, List<ClientConnection> clientConnectionList, PrintWriter printWriter) {
         this.publishMessageQueue = publishMessageQueue;
@@ -45,10 +34,8 @@ public class ServerPublisher implements Runnable, ChatLogicSubject {
         thread = new Thread(this);
         thread.start();
         System.out.println("ServerPublisher Thread start");
-    }
 
-    public void setTextArea(TextArea ta){
-        chatLogTextArea = ta;
+        chatLogicObservers = new ArrayList<>();
     }
 
     @Override

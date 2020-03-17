@@ -12,7 +12,6 @@ import javafx.stage.Stage;
 public class Main extends Application {
 
     private int clientNo = 0;
-    private TextArea textArea;
 
     @Override
     public void start(Stage primaryStage) throws Exception {
@@ -32,7 +31,6 @@ public class Main extends Application {
         UIServerController.setServerIPText();
         WriteUI.setChatLogTextArea(UIServerController.getServerLogTextArea());
 
-        textArea = UIServerController.getServerLogTextArea();
         chatServer.addObserver(UIServerController);
 
 

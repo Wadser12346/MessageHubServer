@@ -57,9 +57,6 @@ public class ChatServer implements Runnable, ChatLogicSubject {
         }
 
 
-        serverPublisher.setTextArea(chatLogTextArea);
-        listenNewClient.setTextArea(chatLogTextArea);
-
         notifyObserverText("HELLO CHAT SERVER OBSERVER");
 
         Scanner in = new Scanner(System.in);
