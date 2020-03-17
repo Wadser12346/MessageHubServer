@@ -1,6 +1,7 @@
 package MainApplication;
 
 import CS4B.Messages.ChatMessage;
+import CS4B.Messages.ChatroomList;
 import MainApplication.Observer.ChatLogicObserver;
 import MainApplication.Observer.ChatLogicSubject;
 import java.io.*;
@@ -20,6 +21,9 @@ public class ClientConnection implements Runnable, ChatLogicSubject {
     private int clientNo;
     private PrintWriter printWriter;
 
+    //For now it lives here, however may need to store this in ChatServer.
+    private ChatroomList chatroomList;
+
     private BlockingQueue<ChatMessage> publishMessageQueue; //passed from ChatServer
     private List<ClientConnection> clientConnectionList;
 
@@ -36,6 +40,11 @@ public class ClientConnection implements Runnable, ChatLogicSubject {
         thread.start();
 
         chatLogicObservers = new ArrayList<>();
+
+        ArrayList<String> chats = new ArrayList<>();
+        chats.add("Chatroom4B");
+        chats.add("Random");
+        chatroomList = new ChatroomList(chats);
     }
 
     public Socket getSocket() {
@@ -59,6 +68,9 @@ public class ClientConnection implements Runnable, ChatLogicSubject {
         try {
             ObjectInputStream inputFromClient = new ObjectInputStream(socket.getInputStream());
             this.objectOutputStream = new ObjectOutputStream(socket.getOutputStream());
+
+            //Send list of chatrooms when client connect..
+            objectOutputStream.writeObject(chatroomList);
 
             while(true){
                 ChatMessage received = (ChatMessage)inputFromClient.readObject();
