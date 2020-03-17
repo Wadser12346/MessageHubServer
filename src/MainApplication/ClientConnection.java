@@ -3,10 +3,6 @@ package MainApplication;
 import MainApplication.Observer.ChatLogicObserver;
 import MainApplication.Observer.ChatLogicSubject;
 import MessageTypes.ChatMessage;
-import javafx.application.Platform;
-import javafx.scene.control.TextArea;
-
-
 import java.io.*;
 import java.net.InetAddress;
 import java.net.Socket;
@@ -23,7 +19,6 @@ public class ClientConnection implements Runnable, ChatLogicSubject {
 
     private int clientNo;
     private PrintWriter printWriter;
-    private Thread thread;
 
     private BlockingQueue<ChatMessage> publishMessageQueue; //passed from ChatServer
     private List<ClientConnection> clientConnectionList;
@@ -37,9 +32,8 @@ public class ClientConnection implements Runnable, ChatLogicSubject {
         this.clientConnectionList = clientConnectionList;
 
         this.clientConnectionList.add(this);
-        thread = new Thread(this);
+        Thread thread = new Thread(this);
         thread.start();
-        System.out.println("Client Connection thread start");
 
         chatLogicObservers = new ArrayList<>();
     }
@@ -69,16 +63,18 @@ public class ClientConnection implements Runnable, ChatLogicSubject {
             while(true){
                 ChatMessage received = (ChatMessage)inputFromClient.readObject();
                 String msg = "From client: " + received + '\n';
+
                 System.out.println(msg);
                 notifyObserverText(msg);
                 publishMessageQueue.put(received);
             }
         }
         catch (IOException e) {
-//            e.printStackTrace();
             String msg = "Client " + clientNo + "'s connection lost..";
             System.out.println(msg);
             printWriter.println(msg);
+            printWriter.flush();
+            notifyObserverText(msg);
         }
         catch (ClassNotFoundException e) {
             System.out.println("Class not found exception catched");

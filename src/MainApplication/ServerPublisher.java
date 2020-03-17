@@ -19,31 +19,22 @@ public class ServerPublisher implements Runnable, ChatLogicSubject {
     private BlockingQueue<ChatMessage> publishMessageQueue;
     private List<ClientConnection> clientConnectionList;
 
-    private ObjectOutputStream objectOutputStream;
-    private int capacity;
-    private Thread thread;
-
     private PrintWriter printWriter;
 
     public ServerPublisher(BlockingQueue<ChatMessage> publishMessageQueue, List<ClientConnection> clientConnectionList, PrintWriter printWriter) {
         this.publishMessageQueue = publishMessageQueue;
         this.clientConnectionList = clientConnectionList;
         this.printWriter = printWriter;
-        objectOutputStream = null;
 
-        thread = new Thread(this);
+        Thread thread = new Thread(this);
         thread.start();
-        System.out.println("ServerPublisher Thread start");
 
         chatLogicObservers = new ArrayList<>();
     }
 
     @Override
     public void run() {
-        String startServerMessage = "Server Publish started at " + new Date() + '\n';
-        printWriter.print(startServerMessage);
 
-        printWriter.flush();
         while(true){
             try {
                 ChatMessage toPublish = publishMessageQueue.take();

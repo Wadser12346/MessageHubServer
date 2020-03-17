@@ -53,7 +53,11 @@ public class ChatServer implements Runnable, ChatLogicSubject {
             serverPublisher.addObserver(chatLogicObservers.get(i));
             listenNewClient.addObserver(chatLogicObservers.get(i));
         }
-        notifyObserverText("Chat Server test notifyObserver");
+
+        String startMsg = "MultiThreaded server started at " + new Date() + '\n';
+        System.out.println(startMsg);
+        printWriter.print(startMsg);
+        notifyObserverText(startMsg);
 
         Scanner in = new Scanner(System.in);
         int num = 1;

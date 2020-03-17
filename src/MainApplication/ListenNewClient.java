@@ -3,9 +3,6 @@ package MainApplication;
 import MainApplication.Observer.ChatLogicObserver;
 import MainApplication.Observer.ChatLogicSubject;
 import MessageTypes.ChatMessage;
-import javafx.application.Platform;
-import javafx.scene.control.TextArea;
-
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.InetAddress;
@@ -26,7 +23,6 @@ public class ListenNewClient implements Runnable, ChatLogicSubject {
     private Thread thread;
     private PrintWriter printWriter;
 
-
     public ListenNewClient(BlockingQueue<ChatMessage> publishMessageQueue, List<ClientConnection> clientConnectionList, PrintWriter printWriter) {
         this.publishMessageQueue = publishMessageQueue;
         this.clientConnectionList = clientConnectionList;
@@ -36,14 +32,12 @@ public class ListenNewClient implements Runnable, ChatLogicSubject {
         clientNo = 0;
         thread = new Thread(this);
         thread.start();
-        System.out.println("ListenNewClient Thread start");
     }
 
     @Override
     public void run() {
         try {
             ServerSocket serverSocket = new ServerSocket(8000);
-            System.out.println("MultiThreaded server started at " + new Date() + '\n');
 
             while(true){
                 Socket socket = serverSocket.accept();
@@ -51,12 +45,17 @@ public class ListenNewClient implements Runnable, ChatLogicSubject {
                 String startingMessage = "Starting thread for client " + clientNo + " at " + new Date() + '\n';
 
                 System.out.println(startingMessage);
+                printWriter.print(startingMessage);
+                printWriter.flush();
                 notifyObserverText(startingMessage);
 
                 InetAddress inetAddress = socket.getInetAddress();
                 String clientInfoMessage = "Client " + clientNo + "'s host name is " + inetAddress.getHostName() + '\n'
                         + "Client " + clientNo + "'s host address is " + inetAddress.getHostAddress() + '\n';
                 System.out.println(clientInfoMessage);
+                printWriter.print(clientInfoMessage);
+                printWriter.flush();
+                notifyObserverText(clientInfoMessage);
 
                 ClientConnection clientConnection = new ClientConnection(socket, inetAddress, clientNo, clientConnectionList, publishMessageQueue, printWriter);
 
