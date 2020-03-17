@@ -14,7 +14,7 @@ import java.io.IOException;
 import java.net.InetAddress;
 
 
-public class Main extends Application implements ChatLogicObserver {
+public class Main extends Application {
 
     private int clientNo = 0;
     private TextArea textArea;
@@ -39,14 +39,12 @@ public class Main extends Application implements ChatLogicObserver {
 
         textArea = serverController.getServerLogTextArea();
 
+
     }
 
     public static void main(String[] args) {
         launch(args);
     }
 
-    @Override
-    public void onTextNotification(String message) {
-        textArea.appendText(message);
-    }
+
 }
