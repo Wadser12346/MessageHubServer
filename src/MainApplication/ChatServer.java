@@ -43,7 +43,6 @@ public class ChatServer implements Runnable, ChatLogicSubject {
     public void main() throws IOException {
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         String filename = new String(new Date() + ".txt");
-//        File logFile = new File(dateFormat.format(new Date()) + ".txt");
         File logFile = new File("out/production/MessageHubServer/ServerLogsText/" + dateFormat.format(new Date()) + ".txt");
         FileWriter fw = new FileWriter(logFile, true);
         printWriter = new PrintWriter(fw);
