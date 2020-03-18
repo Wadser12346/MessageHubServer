@@ -1,6 +1,9 @@
 package MainApplication;
 
 import CS4B.Messages.ChatMessage;
+import MainApplication.Observer.ChatLogicObserver;
+import MainApplication.Observer.ChatLogicSubject;
+
 import javafx.scene.control.TextArea;
 
 import java.io.File;
@@ -15,7 +18,9 @@ import java.util.Scanner;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 
-public class ChatServer implements Runnable {
+public class ChatServer implements Runnable, ChatLogicSubject {
+    private List<ChatLogicObserver> chatLogicObservers;
+
     private List<ClientConnection> clientConnectionList;
     private BlockingQueue<ChatMessage> publishMessageQueue;
 
@@ -24,28 +29,36 @@ public class ChatServer implements Runnable {
     private PrintWriter printWriter;
     private Thread thread;
 
-    private TextArea chatLogTextArea;
-
     public ChatServer() {
         publishMessageQueue = new ArrayBlockingQueue<>(100);
         clientConnectionList = new ArrayList<>();
 
         thread = new Thread(this);
         thread.start();
+
+        chatLogicObservers = new ArrayList<>();
     }
 
     public void main() throws IOException {
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-        File logFile = new File(dateFormat.format(new Date()) + ".txt");
+        String filename = new String(new Date() + ".txt");
+        File logFile = new File("out/production/MessageHubServer/ServerLogsText/" + dateFormat.format(new Date()) + ".txt");
         FileWriter fw = new FileWriter(logFile, true);
         printWriter = new PrintWriter(fw);
 
         serverPublisher = new ServerPublisher(publishMessageQueue,clientConnectionList, printWriter);
         listenNewClient = new ListenNewClient(publishMessageQueue, clientConnectionList, printWriter);
 
+        //add observers
+        for(int i = 0; i < chatLogicObservers.size(); i++){
+            serverPublisher.addObserver(chatLogicObservers.get(i));
+            listenNewClient.addObserver(chatLogicObservers.get(i));
+        }
 
-        serverPublisher.setTextArea(chatLogTextArea);
-        listenNewClient.setTextArea(chatLogTextArea);
+        String startMsg = "MultiThreaded server started at " + new Date() + '\n';
+        System.out.println(startMsg);
+        printWriter.print(startMsg);
+        notifyObserverText(startMsg);
 
         Scanner in = new Scanner(System.in);
         int num = 1;
@@ -66,10 +79,6 @@ public class ChatServer implements Runnable {
         System.out.println(clientConnectionList);
     }
 
-    public void setTextArea(TextArea ta){
-        chatLogTextArea = ta;
-    }
-
     @Override
     public void run() {
         try {
@@ -77,5 +86,23 @@ public class ChatServer implements Runnable {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    @Override
+    public void addObserver(ChatLogicObserver obs) {
+        chatLogicObservers.add(obs);
+    }
+
+    @Override
+    public void removeObserver(ChatLogicObserver obs) {
+        chatLogicObservers.remove(obs);
+    }
+
+    @Override
+    public void notifyObserverText(String message) {
+        for(int i = 0; i < chatLogicObservers.size(); i++){
+            chatLogicObservers.get(i).onTextNotification(message);
+        }
+
     }
 }

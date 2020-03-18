@@ -1,38 +1,31 @@
 package MainApplication;
 
 import CS4B.Messages.ChatMessage;
-import javafx.application.Platform;
-import javafx.scene.control.TextArea;
-
-
+import CS4B.Messages.ChatroomList;
+import MainApplication.Observer.ChatLogicObserver;
+import MainApplication.Observer.ChatLogicSubject;
 import java.io.*;
 import java.net.InetAddress;
 import java.net.Socket;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.BlockingQueue;
 
-public class ClientConnection implements Runnable {
+public class ClientConnection implements Runnable, ChatLogicSubject {
+    private List<ChatLogicObserver> chatLogicObservers;
+
     private Socket socket;
     private InetAddress inetAddress;
+    private ObjectOutputStream objectOutputStream;
+
     private int clientNo;
     private PrintWriter printWriter;
-    private Thread thread;
+
+    //For now it lives here, however may need to store this in ChatServer.
+    private ChatroomList chatroomList;
 
     private BlockingQueue<ChatMessage> publishMessageQueue; //passed from ChatServer
     private List<ClientConnection> clientConnectionList;
-
-    private TextArea chatLogTextArea;
-
-    public ClientConnection(Socket socket, InetAddress inetAddress, int clientNo, List<ClientConnection> clientConnectionList, BlockingQueue<ChatMessage> publishMessageQueue) {
-        this.socket = socket;
-        this.inetAddress = inetAddress;
-        this.clientNo = clientNo;
-        this.publishMessageQueue = publishMessageQueue;
-        this.clientConnectionList = clientConnectionList;
-
-        thread = new Thread(this);
-        thread.start();
-    }
 
     public ClientConnection(Socket socket, InetAddress inetAddress, int clientNo, List<ClientConnection> clientConnectionList, BlockingQueue<ChatMessage> publishMessageQueue,  PrintWriter printWriter) {
         this.socket = socket;
@@ -43,13 +36,15 @@ public class ClientConnection implements Runnable {
         this.clientConnectionList = clientConnectionList;
 
         this.clientConnectionList.add(this);
-        thread = new Thread(this);
+        Thread thread = new Thread(this);
         thread.start();
-        System.out.println("Client Connection thread start");
-    }
 
-    public void setTextArea(TextArea ta){
-        chatLogTextArea = ta;
+        chatLogicObservers = new ArrayList<>();
+
+        ArrayList<String> chats = new ArrayList<>();
+        chats.add("Chatroom4B");
+        chats.add("Random");
+        chatroomList = new ChatroomList(chats);
     }
 
     public Socket getSocket() {
@@ -64,26 +59,34 @@ public class ClientConnection implements Runnable {
         return clientNo;
     }
 
+    public ObjectOutputStream getObjectOutputStream() {
+        return objectOutputStream;
+    }
+
     @Override
     public void run() {
         try {
             ObjectInputStream inputFromClient = new ObjectInputStream(socket.getInputStream());
+            this.objectOutputStream = new ObjectOutputStream(socket.getOutputStream());
+
+            //Send list of chatrooms when client connect..
+            objectOutputStream.writeObject(chatroomList);
 
             while(true){
                 ChatMessage received = (ChatMessage)inputFromClient.readObject();
-                String msg = new String("From client: " + received + '\n');
-                System.out.println("From client: " + received);
-//                Platform.runLater(() ->
-//                        chatLogTextArea.appendText("From Client " + received + '\n'));
-                WriteUI.writeToChatLog(msg);
+                String msg = "From client: " + received + '\n';
+
+                System.out.println(msg);
+                notifyObserverText(msg);
                 publishMessageQueue.put(received);
             }
         }
         catch (IOException e) {
-//            e.printStackTrace();
-            String msg = new String("Client " + clientNo + "'s connection lost..");
+            String msg = "Client " + clientNo + "'s connection lost..";
             System.out.println(msg);
             printWriter.println(msg);
+            printWriter.flush();
+            notifyObserverText(msg);
         }
         catch (ClassNotFoundException e) {
             System.out.println("Class not found exception catched");
@@ -94,8 +97,23 @@ public class ClientConnection implements Runnable {
         finally {
             clientConnectionList.remove(this);
         }
-
     }
 
 
+    @Override
+    public void addObserver(ChatLogicObserver obs) {
+        chatLogicObservers.add(obs);
+    }
+
+    @Override
+    public void removeObserver(ChatLogicObserver obs) {
+        chatLogicObservers.remove(obs);
+    }
+
+    @Override
+    public void notifyObserverText(String message) {
+        for(ChatLogicObserver x: chatLogicObservers){
+            x.onTextNotification(message);
+        }
+    }
 }

@@ -1,69 +1,53 @@
 package MainApplication;
 
 import CS4B.Messages.ChatMessage;
+import MainApplication.Observer.ChatLogicObserver;
+import MainApplication.Observer.ChatLogicSubject;
+
 import javafx.application.Platform;
 import javafx.scene.control.TextArea;
 
 import java.io.*;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.BlockingQueue;
 
-public class ServerPublisher implements Runnable {
+public class ServerPublisher implements Runnable, ChatLogicSubject {
+    private List<ChatLogicObserver> chatLogicObservers;
+
     private BlockingQueue<ChatMessage> publishMessageQueue;
     private List<ClientConnection> clientConnectionList;
 
-    private ObjectOutputStream objectOutputStream;
-    private int capacity;
-    private Thread thread;
-
     private PrintWriter printWriter;
-    private TextArea chatLogTextArea;
-
-    public ServerPublisher(BlockingQueue<ChatMessage> publishMessageQueue, List<ClientConnection> clientConnectionList) {
-        capacity = 100;
-
-        this.publishMessageQueue = publishMessageQueue;
-        this.clientConnectionList = clientConnectionList;
-
-        objectOutputStream = null;
-        thread = new Thread(this);
-        thread.start();
-    }
 
     public ServerPublisher(BlockingQueue<ChatMessage> publishMessageQueue, List<ClientConnection> clientConnectionList, PrintWriter printWriter) {
         this.publishMessageQueue = publishMessageQueue;
         this.clientConnectionList = clientConnectionList;
         this.printWriter = printWriter;
-        objectOutputStream = null;
 
-        thread = new Thread(this);
+        Thread thread = new Thread(this);
         thread.start();
-        System.out.println("ServerPublisher Thread start");
-    }
 
-    public void setTextArea(TextArea ta){
-        chatLogTextArea = ta;
+        chatLogicObservers = new ArrayList<>();
     }
 
     @Override
     public void run() {
-        printWriter.print("Server Publish started at " + new Date() + '\n');
-        Platform.runLater(()->
-                chatLogTextArea.appendText("Server Publish started at " + new Date() + '\n'));
-        printWriter.flush();
+
         while(true){
             try {
                 ChatMessage toPublish = publishMessageQueue.take();
-                System.out.println("Server Publish: " + toPublish);
-                printWriter.print("Server Publish: " + toPublish + '\n');
-                Platform.runLater(()->
-                        chatLogTextArea.appendText("Server Publish: " + toPublish + '\n'));
+
+                String publishMessage = "Server Publish: " + toPublish + '\n';
+                System.out.println(publishMessage);
+                notifyObserverText(publishMessage);
+                printWriter.print(publishMessage);
                 printWriter.flush();
+
                 for(int i = 0; i < clientConnectionList.size(); i++){
-                    objectOutputStream = new ObjectOutputStream(clientConnectionList.get(i).getSocket().getOutputStream());
-                    objectOutputStream.writeObject(toPublish);
+                    clientConnectionList.get(i).getObjectOutputStream().writeObject(toPublish);
                 }
             }
             catch (InterruptedException e) {
@@ -74,6 +58,23 @@ public class ServerPublisher implements Runnable {
                 e.printStackTrace();
                 System.out.println("IOException caught");
             }
+        }
+    }
+
+    @Override
+    public void addObserver(ChatLogicObserver obs) {
+        chatLogicObservers.add(obs);
+    }
+
+    @Override
+    public void removeObserver(ChatLogicObserver obs) {
+        chatLogicObservers.remove(obs);
+    }
+
+    @Override
+    public void notifyObserverText(String message) {
+        for(ChatLogicObserver x: chatLogicObservers){
+            x.onTextNotification(message);
         }
     }
 }
