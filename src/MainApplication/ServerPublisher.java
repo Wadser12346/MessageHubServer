@@ -1,6 +1,6 @@
 package MainApplication;
 
-import MessageTypes.ChatMessage;
+import CS4B.Messages.ChatMessage;
 import javafx.application.Platform;
 import javafx.scene.control.TextArea;
 
