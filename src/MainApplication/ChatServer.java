@@ -1,6 +1,7 @@
 package MainApplication;
 
 import CS4B.Messages.ChatMessage;
+import CS4B.Messages.Packet;
 import MainApplication.Observer.ChatLogicObserver;
 import MainApplication.Observer.ChatLogicSubject;
 
@@ -22,7 +23,7 @@ public class ChatServer implements Runnable, ChatLogicSubject {
     private List<ChatLogicObserver> chatLogicObservers;
 
     private List<ClientConnection> clientConnectionList;
-    private BlockingQueue<ChatMessage> publishMessageQueue;
+    private BlockingQueue<Packet> publishMessageQueue;
 
     private ServerPublisher serverPublisher;
     private ListenNewClient listenNewClient;

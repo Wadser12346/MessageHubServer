@@ -1,6 +1,7 @@
 package MainApplication;
 
 import CS4B.Messages.ChatMessage;
+import CS4B.Messages.Packet;
 import MainApplication.Observer.ChatLogicObserver;
 import MainApplication.Observer.ChatLogicSubject;
 
@@ -17,12 +18,12 @@ import java.util.concurrent.BlockingQueue;
 public class ServerPublisher implements Runnable, ChatLogicSubject {
     private List<ChatLogicObserver> chatLogicObservers;
 
-    private BlockingQueue<ChatMessage> publishMessageQueue;
+    private BlockingQueue<Packet> publishMessageQueue;
     private List<ClientConnection> clientConnectionList;
 
     private PrintWriter printWriter;
 
-    public ServerPublisher(BlockingQueue<ChatMessage> publishMessageQueue, List<ClientConnection> clientConnectionList, PrintWriter printWriter) {
+    public ServerPublisher(BlockingQueue<Packet> publishMessageQueue, List<ClientConnection> clientConnectionList, PrintWriter printWriter) {
         this.publishMessageQueue = publishMessageQueue;
         this.clientConnectionList = clientConnectionList;
         this.printWriter = printWriter;
@@ -38,7 +39,8 @@ public class ServerPublisher implements Runnable, ChatLogicSubject {
 
         while(true){
             try {
-                ChatMessage toPublish = publishMessageQueue.take();
+                Packet toPublish = publishMessageQueue.take();
+                //ChatMessage toPublish = publishMessageQueue.take();
 
                 String publishMessage = "Server Publish: " + toPublish + '\n';
                 System.out.println(publishMessage);

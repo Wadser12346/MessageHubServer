@@ -1,6 +1,7 @@
 package MainApplication;
 
 import CS4B.Messages.ChatMessage;
+import CS4B.Messages.Packet;
 import MainApplication.Observer.ChatLogicObserver;
 import MainApplication.Observer.ChatLogicSubject;
 
@@ -19,13 +20,13 @@ public class ListenNewClient implements Runnable, ChatLogicSubject {
     private List<ChatLogicObserver> chatLogicObservers;
 
     int clientNo;
-    private BlockingQueue<ChatMessage> publishMessageQueue; //Only here so this queue can be passed to ClientConnection
+    private BlockingQueue<Packet> publishMessageQueue; //Only here so this queue can be passed to ClientConnection
     private List<ClientConnection> clientConnectionList;
 
     private Thread thread;
     private PrintWriter printWriter;
 
-    public ListenNewClient(BlockingQueue<ChatMessage> publishMessageQueue, List<ClientConnection> clientConnectionList, PrintWriter printWriter) {
+    public ListenNewClient(BlockingQueue<Packet> publishMessageQueue, List<ClientConnection> clientConnectionList, PrintWriter printWriter) {
         this.publishMessageQueue = publishMessageQueue;
         this.clientConnectionList = clientConnectionList;
         this.printWriter = printWriter;
