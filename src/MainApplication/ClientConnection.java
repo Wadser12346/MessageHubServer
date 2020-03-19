@@ -25,10 +25,10 @@ public class ClientConnection implements Runnable, ChatLogicSubject {
     //For now it lives here, however may need to store this in ChatServer.
     private ArrayList<String> chatrooms;
 
-    private BlockingQueue<ChatMessage> publishMessageQueue; //passed from ChatServer
+    private BlockingQueue<Packet> publishMessageQueue; //passed from ChatServer
     private List<ClientConnection> clientConnectionList;
 
-    public ClientConnection(Socket socket, InetAddress inetAddress, int clientNo, List<ClientConnection> clientConnectionList, BlockingQueue<ChatMessage> publishMessageQueue,  PrintWriter printWriter) {
+    public ClientConnection(Socket socket, InetAddress inetAddress, int clientNo, List<ClientConnection> clientConnectionList, BlockingQueue<Packet> publishMessageQueue,  PrintWriter printWriter) {
         this.socket = socket;
         this.inetAddress = inetAddress;
         this.clientNo = clientNo;
@@ -77,7 +77,7 @@ public class ClientConnection implements Runnable, ChatLogicSubject {
                     String msg = "From client: " + received + '\n';
                     System.out.println(msg);
                     notifyObserverText(msg);
-                    publishMessageQueue.put((ChatMessage) received.getMessage());
+                    publishMessageQueue.put(received);
                 }
                 else if(received.getMessageType().equals("RequestChatroomList")){
                     //Send list of chatrooms when client requests..
