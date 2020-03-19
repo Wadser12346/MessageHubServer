@@ -2,6 +2,7 @@ package MainApplication;
 
 import CS4B.Messages.ChatMessage;
 import CS4B.Messages.ChatroomList;
+import CS4B.Messages.Packet;
 import MainApplication.Observer.ChatLogicObserver;
 import MainApplication.Observer.ChatLogicSubject;
 import java.io.*;
@@ -22,7 +23,7 @@ public class ClientConnection implements Runnable, ChatLogicSubject {
     private PrintWriter printWriter;
 
     //For now it lives here, however may need to store this in ChatServer.
-    private ChatroomList chatroomList;
+    private ArrayList<String> chatrooms;
 
     private BlockingQueue<ChatMessage> publishMessageQueue; //passed from ChatServer
     private List<ClientConnection> clientConnectionList;
@@ -41,10 +42,9 @@ public class ClientConnection implements Runnable, ChatLogicSubject {
 
         chatLogicObservers = new ArrayList<>();
 
-        ArrayList<String> chats = new ArrayList<>();
-        chats.add("Chatroom4B");
-        chats.add("Random");
-        chatroomList = new ChatroomList(chats);
+        chatrooms = new ArrayList<>();
+        chatrooms.add("Chatroom4B");
+        chatrooms.add("Random");
     }
 
     public Socket getSocket() {
@@ -69,16 +69,23 @@ public class ClientConnection implements Runnable, ChatLogicSubject {
             ObjectInputStream inputFromClient = new ObjectInputStream(socket.getInputStream());
             this.objectOutputStream = new ObjectOutputStream(socket.getOutputStream());
 
-            //Send list of chatrooms when client connect..
-            objectOutputStream.writeObject(chatroomList);
+
 
             while(true){
-                ChatMessage received = (ChatMessage)inputFromClient.readObject();
-                String msg = "From client: " + received + '\n';
+                Packet received = (Packet) inputFromClient.readObject();
+                if (received.getMessageType().equals("ChatMessage")){
+                    String msg = "From client: " + received + '\n';
+                    System.out.println(msg);
+                    notifyObserverText(msg);
+                    publishMessageQueue.put((ChatMessage) received.getMessage());
+                }
+                else if(received.getMessageType().equals("RequestChatroomList")){
+                    //Send list of chatrooms when client requests..
+                    System.out.println("Sending Chatroom List");
+                    objectOutputStream.writeObject(new Packet("Server", "N/A", new ChatroomList(chatrooms), "ChatroomList"));
+                }
 
-                System.out.println(msg);
-                notifyObserverText(msg);
-                publishMessageQueue.put(received);
+
             }
         }
         catch (IOException e) {
