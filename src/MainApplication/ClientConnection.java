@@ -69,13 +69,15 @@ public class ClientConnection implements Runnable, ChatLogicSubject {
             ObjectInputStream inputFromClient = new ObjectInputStream(socket.getInputStream());
             this.objectOutputStream = new ObjectOutputStream(socket.getOutputStream());
 
+
+
             while(true){
                 Packet received = (Packet) inputFromClient.readObject();
                 if (received.getMessageType().equals("ChatMessage")){
                     String msg = "From client: " + received + '\n';
                     System.out.println(msg);
                     notifyObserverText(msg);
-                    publishMessageQueue.put((Packet) received.getMessage());
+                    publishMessageQueue.put(received);
                 }
                 else if(received.getMessageType().equals("RequestChatroomList")){
                     //Send list of chatrooms when client requests..
