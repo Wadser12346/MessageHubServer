@@ -47,6 +47,7 @@ public class ChatServer implements Runnable, ChatLogicSubject {
         FileWriter fw = new FileWriter(logFile, true);
         printWriter = new PrintWriter(fw);
 
+
         serverPublisher = new ServerPublisher(publishMessageQueue,clientConnectionList, printWriter);
         listenNewClient = new ListenNewClient(publishMessageQueue, clientConnectionList, printWriter);
 

@@ -26,9 +26,11 @@ public class Main extends Application {
 
         ChatServer chatServer = new ChatServer();
         uiServerController.setServerIPText();
-        WriteUI.setChatLogTextArea(uiServerController.getServerLogTextArea());
+//        WriteUI.setChatLogTextArea(uiServerController.getServerLogTextArea());
+        ChatLogSaver chatLogSaver = new ChatLogSaver();
 
         chatServer.addObserver(uiServerController);
+        chatServer.addObserver(chatLogSaver);
 
         primaryStage.show();
     }
