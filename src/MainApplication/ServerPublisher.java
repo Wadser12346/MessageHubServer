@@ -23,7 +23,7 @@ public class ServerPublisher implements Runnable, ChatLogicSubject {
 
     private PrintWriter printWriter;
 
-    public ServerPublisher(BlockingQueue<Packet> publishMessageQueue, List<ClientConnection> clientConnectionList, PrintWriter printWriter) {
+    public ServerPublisher(BlockingQueue<Packet> publishMessageQueue, List<ClientConnection> clientConnectionList) {
         this.publishMessageQueue = publishMessageQueue;
         this.clientConnectionList = clientConnectionList;
         this.printWriter = printWriter;
@@ -45,8 +45,6 @@ public class ServerPublisher implements Runnable, ChatLogicSubject {
                 String publishMessage = "Server Publish: " + toPublish + '\n';
                 System.out.println(publishMessage);
                 notifyObserverText(publishMessage);
-                printWriter.print(publishMessage);
-                printWriter.flush();
 
                 for(int i = 0; i < clientConnectionList.size(); i++){
                     clientConnectionList.get(i).getObjectOutputStream().writeObject(toPublish);

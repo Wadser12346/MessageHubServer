@@ -35,32 +35,38 @@ public class ChatServer implements Runnable, ChatLogicSubject {
         clientConnectionList = new ArrayList<>();
 
         thread = new Thread(this);
-        thread.start();
+//        thread.start();
 
         chatLogicObservers = new ArrayList<>();
     }
 
-    public void main() throws IOException {
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-        String filename = new String(new Date() + ".txt");
-        File logFile = new File("out/production/MessageHubServer/ServerLogsText/" + dateFormat.format(new Date()) + ".txt");
-        FileWriter fw = new FileWriter(logFile, true);
-        printWriter = new PrintWriter(fw);
-
-
-        serverPublisher = new ServerPublisher(publishMessageQueue,clientConnectionList, printWriter);
-        listenNewClient = new ListenNewClient(publishMessageQueue, clientConnectionList, printWriter);
-
-        //add observers
+    public void startServer(){
+        serverPublisher = new ServerPublisher(publishMessageQueue,clientConnectionList);
+        listenNewClient = new ListenNewClient(publishMessageQueue, clientConnectionList);
+        //add observers, since observer list is not passed down.
         for(int i = 0; i < chatLogicObservers.size(); i++){
             serverPublisher.addObserver(chatLogicObservers.get(i));
             listenNewClient.addObserver(chatLogicObservers.get(i));
         }
-
         String startMsg = "MultiThreaded server started at " + new Date() + '\n';
         System.out.println(startMsg);
-        printWriter.print(startMsg);
         notifyObserverText(startMsg);
+    }
+
+    public void main() {
+
+//        serverPublisher = new ServerPublisher(publishMessageQueue,clientConnectionList);
+//        listenNewClient = new ListenNewClient(publishMessageQueue, clientConnectionList);
+//
+//        //add observers, since observer list is not passed down.
+//        for(int i = 0; i < chatLogicObservers.size(); i++){
+//            serverPublisher.addObserver(chatLogicObservers.get(i));
+//            listenNewClient.addObserver(chatLogicObservers.get(i));
+//        }
+//
+//        String startMsg = "MultiThreaded server started at " + new Date() + '\n';
+//        System.out.println(startMsg);
+//        notifyObserverText(startMsg);
 
         Scanner in = new Scanner(System.in);
         int num = 1;
@@ -81,13 +87,13 @@ public class ChatServer implements Runnable, ChatLogicSubject {
         System.out.println(clientConnectionList);
     }
 
+    public void startThread(){
+        thread.start();
+    }
+
     @Override
     public void run() {
-        try {
-            main();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        main();
     }
 
     @Override

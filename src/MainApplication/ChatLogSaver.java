@@ -12,6 +12,7 @@ import java.util.Date;
 public class ChatLogSaver implements ChatLogicObserver {
     PrintWriter printWriter;
 
+
     public void startLog() throws IOException {
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         String filename = new String(new Date() + ".txt");
@@ -22,6 +23,7 @@ public class ChatLogSaver implements ChatLogicObserver {
 
     @Override
     public void onTextNotification(String message) {
-
+        printWriter.print(message);
+        printWriter.flush();
     }
 }

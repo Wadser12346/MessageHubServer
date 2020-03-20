@@ -24,12 +24,10 @@ public class ListenNewClient implements Runnable, ChatLogicSubject {
     private List<ClientConnection> clientConnectionList;
 
     private Thread thread;
-    private PrintWriter printWriter;
 
-    public ListenNewClient(BlockingQueue<Packet> publishMessageQueue, List<ClientConnection> clientConnectionList, PrintWriter printWriter) {
+    public ListenNewClient(BlockingQueue<Packet> publishMessageQueue, List<ClientConnection> clientConnectionList) {
         this.publishMessageQueue = publishMessageQueue;
         this.clientConnectionList = clientConnectionList;
-        this.printWriter = printWriter;
         chatLogicObservers = new ArrayList<>();
 
         clientNo = 0;
@@ -48,19 +46,15 @@ public class ListenNewClient implements Runnable, ChatLogicSubject {
                 String startingMessage = "Starting thread for client " + clientNo + " at " + new Date() + '\n';
 
                 System.out.println(startingMessage);
-                printWriter.print(startingMessage);
-                printWriter.flush();
                 notifyObserverText(startingMessage);
 
                 InetAddress inetAddress = socket.getInetAddress();
                 String clientInfoMessage = "Client " + clientNo + "'s host name is " + inetAddress.getHostName() + '\n'
                         + "Client " + clientNo + "'s host address is " + inetAddress.getHostAddress() + '\n';
                 System.out.println(clientInfoMessage);
-                printWriter.print(clientInfoMessage);
-                printWriter.flush();
                 notifyObserverText(clientInfoMessage);
 
-                ClientConnection clientConnection = new ClientConnection(socket, inetAddress, clientNo, clientConnectionList, publishMessageQueue, printWriter);
+                ClientConnection clientConnection = new ClientConnection(socket, inetAddress, clientNo, clientConnectionList, publishMessageQueue);
 
                 for(int i = 0; i < chatLogicObservers.size(); i++){
                     clientConnection.addObserver(chatLogicObservers.get(i));

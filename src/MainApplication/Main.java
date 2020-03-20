@@ -24,13 +24,16 @@ public class Main extends Application {
         primaryStage.setTitle("SERVER");
         primaryStage.setScene(new Scene(serverUI));
 
-        ChatServer chatServer = new ChatServer();
-        uiServerController.setServerIPText();
-//        WriteUI.setChatLogTextArea(uiServerController.getServerLogTextArea());
         ChatLogSaver chatLogSaver = new ChatLogSaver();
+        chatLogSaver.startLog();
 
-        chatServer.addObserver(uiServerController);
-        chatServer.addObserver(chatLogSaver);
+        ChatServer server = new ChatServer();
+        uiServerController.setServerIPText();
+
+        server.addObserver(uiServerController);
+        server.addObserver(chatLogSaver);
+        server.startServer();
+        server.startThread();
 
         primaryStage.show();
     }

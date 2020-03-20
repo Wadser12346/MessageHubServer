@@ -19,7 +19,6 @@ public class ClientConnection implements Runnable, ChatLogicSubject {
     private ObjectOutputStream objectOutputStream;
 
     private int clientNo;
-    private PrintWriter printWriter;
 
     //For now it lives here, however may need to store this in ChatServer.
     private ArrayList<String> chatrooms;
@@ -27,11 +26,10 @@ public class ClientConnection implements Runnable, ChatLogicSubject {
     private BlockingQueue<Packet> publishMessageQueue; //passed from ChatServer
     private List<ClientConnection> clientConnectionList;
 
-    public ClientConnection(Socket socket, InetAddress inetAddress, int clientNo, List<ClientConnection> clientConnectionList, BlockingQueue<Packet> publishMessageQueue,  PrintWriter printWriter) {
+    public ClientConnection(Socket socket, InetAddress inetAddress, int clientNo, List<ClientConnection> clientConnectionList, BlockingQueue<Packet> publishMessageQueue) {
         this.socket = socket;
         this.inetAddress = inetAddress;
         this.clientNo = clientNo;
-        this.printWriter = printWriter;
         this.publishMessageQueue = publishMessageQueue;
         this.clientConnectionList = clientConnectionList;
 
@@ -68,8 +66,6 @@ public class ClientConnection implements Runnable, ChatLogicSubject {
             ObjectInputStream inputFromClient = new ObjectInputStream(socket.getInputStream());
             this.objectOutputStream = new ObjectOutputStream(socket.getOutputStream());
 
-
-
             while(true){
                 Packet received = (Packet) inputFromClient.readObject();
                 if (received.getMessageType().equals("ChatMessage")){
@@ -91,8 +87,8 @@ public class ClientConnection implements Runnable, ChatLogicSubject {
         catch (IOException e) {
             String msg = "Client " + clientNo + "'s connection lost..";
             System.out.println(msg);
-            printWriter.println(msg);
-            printWriter.flush();
+//            printWriter.println(msg);
+//            printWriter.flush();
             notifyObserverText(msg);
         }
         catch (ClassNotFoundException e) {
