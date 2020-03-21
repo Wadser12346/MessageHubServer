@@ -21,13 +21,13 @@ import java.util.concurrent.BlockingQueue;
 
 public class ChatServer implements Runnable, ChatLogicSubject {
     private List<ChatLogicObserver> chatLogicObservers;
+    private ArrayList<String> chatrooms;
 
     private List<ClientConnection> clientConnectionList;
     private BlockingQueue<Packet> publishMessageQueue;
 
     private ServerPublisher serverPublisher;
     private ListenNewClient listenNewClient;
-    private PrintWriter printWriter;
     private Thread thread;
 
     public ChatServer() {
@@ -35,14 +35,16 @@ public class ChatServer implements Runnable, ChatLogicSubject {
         clientConnectionList = new ArrayList<>();
 
         thread = new Thread(this);
-//        thread.start();
-
         chatLogicObservers = new ArrayList<>();
+
+        chatrooms = new ArrayList<>();
+        chatrooms.add("Chatroom4B");
+        chatrooms.add("Random");
     }
 
     public void startServer(){
         serverPublisher = new ServerPublisher(publishMessageQueue,clientConnectionList);
-        listenNewClient = new ListenNewClient(publishMessageQueue, clientConnectionList);
+        listenNewClient = new ListenNewClient(publishMessageQueue, clientConnectionList, chatrooms);
         //add observers, since observer list is not passed down.
         for(int i = 0; i < chatLogicObservers.size(); i++){
             serverPublisher.addObserver(chatLogicObservers.get(i));
@@ -54,19 +56,6 @@ public class ChatServer implements Runnable, ChatLogicSubject {
     }
 
     public void main() {
-
-//        serverPublisher = new ServerPublisher(publishMessageQueue,clientConnectionList);
-//        listenNewClient = new ListenNewClient(publishMessageQueue, clientConnectionList);
-//
-//        //add observers, since observer list is not passed down.
-//        for(int i = 0; i < chatLogicObservers.size(); i++){
-//            serverPublisher.addObserver(chatLogicObservers.get(i));
-//            listenNewClient.addObserver(chatLogicObservers.get(i));
-//        }
-//
-//        String startMsg = "MultiThreaded server started at " + new Date() + '\n';
-//        System.out.println(startMsg);
-//        notifyObserverText(startMsg);
 
         Scanner in = new Scanner(System.in);
         int num = 1;

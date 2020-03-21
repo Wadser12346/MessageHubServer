@@ -26,22 +26,19 @@ public class ClientConnection implements Runnable, ChatLogicSubject {
     private BlockingQueue<Packet> publishMessageQueue; //passed from ChatServer
     private List<ClientConnection> clientConnectionList;
 
-    public ClientConnection(Socket socket, InetAddress inetAddress, int clientNo, List<ClientConnection> clientConnectionList, BlockingQueue<Packet> publishMessageQueue) {
+    public ClientConnection(Socket socket, InetAddress inetAddress, int clientNo, List<ClientConnection> clientConnectionList, BlockingQueue<Packet> publishMessageQueue, ArrayList<String> chatrooms) {
         this.socket = socket;
         this.inetAddress = inetAddress;
         this.clientNo = clientNo;
+        this.chatrooms = chatrooms;
         this.publishMessageQueue = publishMessageQueue;
         this.clientConnectionList = clientConnectionList;
-
         this.clientConnectionList.add(this);
         Thread thread = new Thread(this);
         thread.start();
 
         chatLogicObservers = new ArrayList<>();
 
-        chatrooms = new ArrayList<>();
-        chatrooms.add("Chatroom4B");
-        chatrooms.add("Random");
     }
 
     public Socket getSocket() {
@@ -72,7 +69,6 @@ public class ClientConnection implements Runnable, ChatLogicSubject {
                     String msg = "From client: " + received + '\n';
                     System.out.println(msg);
                     notifyObserverText(msg);
-                    //publishMessageQueue.put((Packet) received.getMessage());
                     publishMessageQueue.put(received);
                 }
                 else if(received.getMessageType().equals("RequestChatroomList")){
@@ -80,15 +76,11 @@ public class ClientConnection implements Runnable, ChatLogicSubject {
                     System.out.println("Sending Chatroom List");
                     objectOutputStream.writeObject(new Packet("Server", "N/A", new ChatroomList(chatrooms), "ChatroomList"));
                 }
-
-
             }
         }
         catch (IOException e) {
             String msg = "Client " + clientNo + "'s connection lost..";
             System.out.println(msg);
-//            printWriter.println(msg);
-//            printWriter.flush();
             notifyObserverText(msg);
         }
         catch (ClassNotFoundException e) {

@@ -18,17 +18,19 @@ import java.util.concurrent.BlockingQueue;
 
 public class ListenNewClient implements Runnable, ChatLogicSubject {
     private List<ChatLogicObserver> chatLogicObservers;
+    private ArrayList<String> chatrooms;
 
-    int clientNo;
+    private int clientNo;
     private BlockingQueue<Packet> publishMessageQueue; //Only here so this queue can be passed to ClientConnection
     private List<ClientConnection> clientConnectionList;
 
     private Thread thread;
 
-    public ListenNewClient(BlockingQueue<Packet> publishMessageQueue, List<ClientConnection> clientConnectionList) {
+    public ListenNewClient(BlockingQueue<Packet> publishMessageQueue, List<ClientConnection> clientConnectionList, ArrayList<String> chatrooms) {
         this.publishMessageQueue = publishMessageQueue;
         this.clientConnectionList = clientConnectionList;
         chatLogicObservers = new ArrayList<>();
+        this.chatrooms = chatrooms;
 
         clientNo = 0;
         thread = new Thread(this);
@@ -54,7 +56,7 @@ public class ListenNewClient implements Runnable, ChatLogicSubject {
                 System.out.println(clientInfoMessage);
                 notifyObserverText(clientInfoMessage);
 
-                ClientConnection clientConnection = new ClientConnection(socket, inetAddress, clientNo, clientConnectionList, publishMessageQueue);
+                ClientConnection clientConnection = new ClientConnection(socket, inetAddress, clientNo, clientConnectionList, publishMessageQueue, chatrooms);
 
                 for(int i = 0; i < chatLogicObservers.size(); i++){
                     clientConnection.addObserver(chatLogicObservers.get(i));
