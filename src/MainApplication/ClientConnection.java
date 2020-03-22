@@ -1,6 +1,7 @@
 package MainApplication;
 
 import CS4B.Messages.ChatroomList;
+import CS4B.Messages.NewChatroom;
 import CS4B.Messages.Packet;
 import MainApplication.Observer.ChatLogicObserver;
 import MainApplication.Observer.ChatLogicSubject;
@@ -75,6 +76,13 @@ public class ClientConnection implements Runnable, ChatLogicSubject {
                     //Send list of chatrooms when client requests..
                     System.out.println("Sending Chatroom List");
                     objectOutputStream.writeObject(new Packet("Server", "N/A", new ChatroomList(chatrooms), "ChatroomList"));
+                }
+                else if(received.getMessageType().equals("NewChatroomRequest")){
+                    //received new chatroom request, need to update list of chatrooms and send it back to client
+                    System.out.println("adding new chatroom to list");
+                    NewChatroom newChatroom = (NewChatroom)received.getMessage();
+                    chatrooms.add(newChatroom.getNewChatroomName());
+                    publishMessageQueue.put(new Packet("Server", "N/A", new ChatroomList(chatrooms), "ChatroomList"));
                 }
             }
         }

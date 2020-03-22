@@ -40,7 +40,6 @@ public class ServerPublisher implements Runnable, ChatLogicSubject {
         while(true){
             try {
                 Packet toPublish = publishMessageQueue.take();
-                //ChatMessage toPublish = publishMessageQueue.take();
 
                 String publishMessage = "Server Publish: " + toPublish + '\n';
                 System.out.println(publishMessage);
