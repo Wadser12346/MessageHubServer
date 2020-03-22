@@ -41,7 +41,7 @@ public class ServerPublisher implements Runnable, ChatLogicSubject {
             try {
                 Packet toPublish = publishMessageQueue.take();
 
-                String publishMessage = "Server Publish: " + toPublish + '\n';
+                String publishMessage = "Server Publish: " + trimPacketMessage(toPublish) + '\n';
                 System.out.println(publishMessage);
                 notifyObserverText(publishMessage);
 
@@ -58,6 +58,24 @@ public class ServerPublisher implements Runnable, ChatLogicSubject {
                 System.out.println("IOException caught");
             }
         }
+    }
+
+    private String trimPacketMessage(Packet packet){
+        if(packet.getMessage() instanceof ChatMessage){
+            ChatMessage cm = (ChatMessage)packet.getMessage();
+            StringBuilder stringBuilder = new StringBuilder("");
+            stringBuilder.append(packet.getUser() + ": ");
+            if(cm.hasStringMessage()){
+                stringBuilder.append(cm.getStringMessage());
+            }
+            if(cm.hasPictureMessage()){
+                stringBuilder.append(" + Image");
+            }
+
+            return stringBuilder.toString();
+        }
+
+        return packet.toString();
     }
 
     @Override
