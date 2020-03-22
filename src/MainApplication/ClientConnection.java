@@ -1,5 +1,6 @@
 package MainApplication;
 
+import CS4B.Messages.ChatMessage;
 import CS4B.Messages.ChatroomList;
 import CS4B.Messages.NewChatroom;
 import CS4B.Messages.Packet;
@@ -69,7 +70,7 @@ public class ClientConnection implements Runnable, ChatLogicSubject {
             while(true){
                 Packet received = (Packet) inputFromClient.readObject();
                 if (received.getMessageType().equals("ChatMessage")){
-                    String msg = "From client: " + getLast4ID() + " : " + received + '\n';
+                    String msg = "From client: " + getLast4ID() + " : " + trimPacketMessage(received) + '\n';
                     System.out.println(msg);
                     notifyObserverText(msg);
                     publishMessageQueue.put(received);
@@ -111,6 +112,23 @@ public class ClientConnection implements Runnable, ChatLogicSubject {
         finally {
             clientConnectionList.remove(this);
         }
+    }
+
+    private String trimPacketMessage(Packet packet){
+        if(packet.getMessage() instanceof ChatMessage){
+            ChatMessage cm = (ChatMessage)packet.getMessage();
+            StringBuilder stringBuilder = new StringBuilder("");
+            stringBuilder.append(packet.getUser() + ": ");
+            stringBuilder.append(cm.getStringMessage());
+
+            if(cm.hasPictureMessage()){
+                stringBuilder.append(" + Image");
+            }
+
+            return stringBuilder.toString();
+        }
+
+        return packet.toString();
     }
 
     private String getLast4ID(){

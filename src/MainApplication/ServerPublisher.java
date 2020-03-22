@@ -65,9 +65,8 @@ public class ServerPublisher implements Runnable, ChatLogicSubject {
             ChatMessage cm = (ChatMessage)packet.getMessage();
             StringBuilder stringBuilder = new StringBuilder("");
             stringBuilder.append(packet.getUser() + ": ");
-            if(cm.hasStringMessage()){
-                stringBuilder.append(cm.getStringMessage());
-            }
+            stringBuilder.append(cm.getStringMessage());
+
             if(cm.hasPictureMessage()){
                 stringBuilder.append(" + Image");
             }
