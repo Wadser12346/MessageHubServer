@@ -100,6 +100,5 @@ public class ChatServer implements Runnable, ChatLogicSubject {
         for(int i = 0; i < chatLogicObservers.size(); i++){
             chatLogicObservers.get(i).onTextNotification(message);
         }
-
     }
 }

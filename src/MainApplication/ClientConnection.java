@@ -10,6 +10,7 @@ import java.net.InetAddress;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 import java.util.concurrent.BlockingQueue;
 
 public class ClientConnection implements Runnable, ChatLogicSubject {
@@ -18,8 +19,8 @@ public class ClientConnection implements Runnable, ChatLogicSubject {
     private Socket socket;
     private InetAddress inetAddress;
     private ObjectOutputStream objectOutputStream;
-
     private int clientNo;
+    private UUID id;
 
     //For now it lives here, however may need to store this in ChatServer.
     private ArrayList<String> chatrooms;
@@ -35,11 +36,12 @@ public class ClientConnection implements Runnable, ChatLogicSubject {
         this.publishMessageQueue = publishMessageQueue;
         this.clientConnectionList = clientConnectionList;
         this.clientConnectionList.add(this);
-        Thread thread = new Thread(this);
-        thread.start();
-
         chatLogicObservers = new ArrayList<>();
 
+        id = UUID.randomUUID();
+
+        Thread thread = new Thread(this);
+        thread.start();
     }
 
     public Socket getSocket() {
@@ -67,7 +69,7 @@ public class ClientConnection implements Runnable, ChatLogicSubject {
             while(true){
                 Packet received = (Packet) inputFromClient.readObject();
                 if (received.getMessageType().equals("ChatMessage")){
-                    String msg = "From client: " + received + '\n';
+                    String msg = "From client: " + getLast4ID() + " : " + received + '\n';
                     System.out.println(msg);
                     notifyObserverText(msg);
                     publishMessageQueue.put(received);
@@ -79,10 +81,19 @@ public class ClientConnection implements Runnable, ChatLogicSubject {
                 }
                 else if(received.getMessageType().equals("NewChatroomRequest")){
                     //received new chatroom request, need to update list of chatrooms and send it back to client
-                    System.out.println("adding new chatroom to list");
                     NewChatroom newChatroom = (NewChatroom)received.getMessage();
+                    String msg = "Adding chatroom " + newChatroom.getNewChatroomName() + " to list";
+                    System.out.println(msg);
+                    notifyObserverText(msg);
                     chatrooms.add(newChatroom.getNewChatroomName());
                     publishMessageQueue.put(new Packet("Server", "N/A", new ChatroomList(chatrooms), "ChatroomList"));
+                }
+                else if(received.getMessageType().equals("DisconnectMessageClient")){
+                    //received disconnect message from client
+                    String msg = "client" + getLast4ID() + " disconnect";
+                    notifyObserverText(msg);
+                    System.out.println(msg);
+                    break;
                 }
             }
         }
@@ -102,6 +113,15 @@ public class ClientConnection implements Runnable, ChatLogicSubject {
         }
     }
 
+    private String getLast4ID(){
+        String stringID = id.toString();
+        if(stringID.length() >4){
+            return stringID.substring(stringID.length()-4);
+        }
+        else{
+            return stringID;
+        }
+    }
 
     @Override
     public void addObserver(ChatLogicObserver obs) {
