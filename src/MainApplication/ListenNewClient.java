@@ -56,7 +56,7 @@ public class ListenNewClient implements Runnable, ChatLogicSubject {
                 System.out.println(clientInfoMessage);
                 notifyObserverText(clientInfoMessage);
 
-                ClientConnection clientConnection = new ClientConnection(socket, inetAddress, clientNo, clientConnectionList, publishMessageQueue, chatrooms);
+                ClientConnection clientConnection = new ClientConnection(socket, clientNo, clientConnectionList, publishMessageQueue, chatrooms);
 
                 for(int i = 0; i < chatLogicObservers.size(); i++){
                     clientConnection.addObserver(chatLogicObservers.get(i));

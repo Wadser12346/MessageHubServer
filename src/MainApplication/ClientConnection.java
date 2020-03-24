@@ -18,7 +18,6 @@ public class ClientConnection implements Runnable, ChatLogicSubject {
     private List<ChatLogicObserver> chatLogicObservers;
 
     private Socket socket;
-    private InetAddress inetAddress;
     private ObjectOutputStream objectOutputStream;
     private int clientNo;
     private UUID id;
@@ -29,9 +28,8 @@ public class ClientConnection implements Runnable, ChatLogicSubject {
     private BlockingQueue<Packet> publishMessageQueue; //passed from ChatServer
     private List<ClientConnection> clientConnectionList;
 
-    public ClientConnection(Socket socket, InetAddress inetAddress, int clientNo, List<ClientConnection> clientConnectionList, BlockingQueue<Packet> publishMessageQueue, ArrayList<String> chatrooms) {
+    public ClientConnection(Socket socket, int clientNo, List<ClientConnection> clientConnectionList, BlockingQueue<Packet> publishMessageQueue, ArrayList<String> chatrooms) {
         this.socket = socket;
-        this.inetAddress = inetAddress;
         this.clientNo = clientNo;
         this.chatrooms = chatrooms;
         this.publishMessageQueue = publishMessageQueue;
@@ -47,10 +45,6 @@ public class ClientConnection implements Runnable, ChatLogicSubject {
 
     public Socket getSocket() {
         return socket;
-    }
-
-    public InetAddress getInetAddress() {
-        return inetAddress;
     }
 
     public int getClientNo() {
