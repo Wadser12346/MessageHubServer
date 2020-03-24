@@ -22,12 +22,9 @@ public class ServerPublisher implements Runnable, ChatLogicSubject {
     private BlockingQueue<Packet> publishMessageQueue;
     private List<ClientConnection> clientConnectionList;
 
-    private PrintWriter printWriter;
-
     public ServerPublisher(BlockingQueue<Packet> publishMessageQueue, List<ClientConnection> clientConnectionList) {
         this.publishMessageQueue = publishMessageQueue;
         this.clientConnectionList = clientConnectionList;
-        this.printWriter = printWriter;
 
         Thread thread = new Thread(this);
         thread.start();

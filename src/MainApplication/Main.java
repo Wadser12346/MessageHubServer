@@ -11,8 +11,6 @@ import javafx.stage.Stage;
 
 public class Main extends Application {
 
-    private int clientNo = 0;
-
     @Override
     public void start(Stage primaryStage) throws Exception {
         UIServerController uiServerController = new UIServerController();
