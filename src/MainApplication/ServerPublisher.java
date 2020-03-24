@@ -1,6 +1,7 @@
 package MainApplication;
 
 import CS4B.Messages.ChatMessage;
+import CS4B.Messages.ChatroomList;
 import CS4B.Messages.Packet;
 import MainApplication.Observer.ChatLogicObserver;
 import MainApplication.Observer.ChatLogicSubject;
@@ -40,7 +41,10 @@ public class ServerPublisher implements Runnable, ChatLogicSubject {
         while(true){
             try {
                 Packet toPublish = publishMessageQueue.take();
-
+//                if(toPublish.getMessageType().equals("ChatroomList")){
+//                    for (String s: ((ChatroomList)toPublish.getMessage()).getChatrooms())
+//                        System.out.println(s);
+//                }
                 String publishMessage = "Server Publish: " + trimPacketMessage(toPublish) + '\n';
                 System.out.println(publishMessage);
                 notifyObserverText(publishMessage);

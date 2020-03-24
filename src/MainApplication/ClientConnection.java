@@ -87,7 +87,9 @@ public class ClientConnection implements Runnable, ChatLogicSubject {
                     System.out.println(msg);
                     notifyObserverText(msg);
                     chatrooms.add(newChatroom.getNewChatroomName());
-                    publishMessageQueue.put(new Packet("Server", "N/A", new ChatroomList(chatrooms), "ChatroomList"));
+                    ArrayList<String>l = new ArrayList<>(chatrooms);// TODO: This fixed showing new chatroom bug for now but we need a better way.
+                    publishMessageQueue.put(new Packet("Server", "N/A", new ChatroomList(l), "ChatroomList"));
+
                 }
                 else if(received.getMessageType().equals("DisconnectMessageClient")){
                     //received disconnect message from client
