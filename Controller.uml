@@ -1,12 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Diagram>
   <ID>JAVA</ID>
-  <OriginalElement>MainApplication</OriginalElement>
-  <nodes />
+  <OriginalElement>MainApplication.Controller</OriginalElement>
+  <nodes>
+    <node x="0.0" y="0.0">MainApplication.Controller.UIServerController</node>
+  </nodes>
   <notes />
   <edges />
-  <settings layout="Hierarchic Group" zoom="1.0" x="502.5" y="263.5" />
-  <SelectedNodes />
+  <settings layout="Hierarchic Group" zoom="1.0" x="83.5" y="14.5" />
+  <SelectedNodes>
+    <node>MainApplication.Controller.UIServerController</node>
+  </SelectedNodes>
   <Categories>
     <Category>Fields</Category>
     <Category>Constructors</Category>

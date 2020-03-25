@@ -1,4 +1,0 @@
-Server Publish started at Mon Mar 16 17:44:40 PDT 2020
-Server Publish started at Mon Mar 16 17:46:17 PDT 2020
-Server Publish: Hey there null
-Server Publish: hi null
