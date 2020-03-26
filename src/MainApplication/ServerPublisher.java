@@ -21,6 +21,7 @@ public class ServerPublisher implements Runnable, ChatLogicSubject {
 
     private BlockingQueue<Packet> publishMessageQueue;
     private List<ClientConnection> clientConnectionList;
+    private List<ChatroomPublisher> chatroomPublisherList;
 
     public ServerPublisher(BlockingQueue<Packet> publishMessageQueue, List<ClientConnection> clientConnectionList) {
         this.publishMessageQueue = publishMessageQueue;
@@ -30,6 +31,24 @@ public class ServerPublisher implements Runnable, ChatLogicSubject {
         thread.start();
 
         chatLogicObservers = new ArrayList<>();
+    }
+
+    public void run2(){
+        while(true){
+            try {
+                Packet toPublish = publishMessageQueue.take();
+
+                for (ChatroomPublisher c :
+                        chatroomPublisherList) {
+                    if(c.equals(toPublish.getChatroomName())){
+                        c.addToMessageQueue(toPublish);
+                    }
+                }
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+                break;
+            }
+        }
     }
 
     @Override

@@ -20,6 +20,22 @@ public class ChatroomPublisher implements Runnable {
         chatroomMessageQueue = new ArrayBlockingQueue<>(500);
     }
 
+    @Override
+    public boolean equals(Object obj){
+        if(obj instanceof String){
+            return obj.equals(chatroomName);
+        }
+        return false;
+    }
+
+    public String getChatroomName() {
+        return chatroomName;
+    }
+
+    void addToMessageQueue(Packet packet) throws InterruptedException {
+        chatroomMessageQueue.put(packet);
+    }
+
     public void addClientToRoom(ClientConnection client){
         subscribedClientList.add(client);
     }
