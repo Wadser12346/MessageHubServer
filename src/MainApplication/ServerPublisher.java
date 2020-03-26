@@ -23,14 +23,13 @@ public class ServerPublisher implements Runnable, ChatLogicSubject {
     private List<ClientConnection> clientConnectionList;
     private List<ChatroomPublisher> chatroomPublisherList;
 
-    public ServerPublisher(BlockingQueue<Packet> publishMessageQueue, List<ClientConnection> clientConnectionList) {
+    public ServerPublisher(BlockingQueue<Packet> publishMessageQueue, List<ClientConnection> clientConnectionList, List<ChatLogicObserver> chatLogicObservers) {
         this.publishMessageQueue = publishMessageQueue;
         this.clientConnectionList = clientConnectionList;
+        this.chatLogicObservers = chatLogicObservers;
 
         Thread thread = new Thread(this);
         thread.start();
-
-        chatLogicObservers = new ArrayList<>();
     }
 
     public void run2(){
