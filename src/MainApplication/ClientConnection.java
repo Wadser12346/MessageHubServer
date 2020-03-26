@@ -51,7 +51,7 @@ public class ClientConnection implements Runnable, ChatLogicSubject {
         return clientNo;
     }
 
-    public ObjectOutputStream getObjectOutputStream() {
+    public synchronized ObjectOutputStream getObjectOutputStream() {
         return objectOutputStream;
     }
 
