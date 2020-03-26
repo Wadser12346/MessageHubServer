@@ -2,17 +2,155 @@
 <Diagram>
   <ID>JAVA</ID>
   <OriginalElement>MainApplication</OriginalElement>
-  <nodes />
+  <nodes>
+    <node x="1350.4849581724582" y="0.0">MainApplication.FXML</node>
+    <node x="684.2916666666666" y="819.0">MainApplication.ServerPublisher</node>
+    <node x="712.2557915057915" y="133.0">MainApplication.Observer.ChatLogicSubject</node>
+    <node x="307.29166666666663" y="280.0">MainApplication.ClientConnection</node>
+    <node x="0.0" y="1388.0">MainApplication.Controller</node>
+    <node x="640.8331456456457" y="1180.0">MainApplication.ChatServer</node>
+    <node x="86.0" y="797.0">MainApplication.ListenNewClient</node>
+    <node x="720.3331456456457" y="1685.0">MainApplication.Main</node>
+    <node x="1096.4849581724582" y="1344.0">MainApplication.ChatLogSaver</node>
+    <node x="742.2557915057915" y="0.0">MainApplication.Observer.ChatLogicObserver</node>
+  </nodes>
   <notes />
-  <edges />
-  <settings layout="Hierarchic Group" zoom="1.0" x="502.5" y="263.5" />
-  <SelectedNodes />
+  <edges>
+    <edge source="MainApplication.ListenNewClient" target="MainApplication.Observer.ChatLogicObserver">
+      <point x="-207.08333333333326" y="-156.5" />
+      <point x="127.41666666666674" y="777.0" />
+      <point x="193.13079150579154" y="777.0" />
+      <point x="193.13079150579154" y="83.0" />
+      <point x="770.7557915057915" y="83.0" />
+      <point x="-76.0" y="26.5" />
+    </edge>
+    <edge source="MainApplication.ServerPublisher" target="MainApplication.Observer.ChatLogicSubject">
+      <point x="0.0" y="-134.5" />
+      <point x="882.7916666666666" y="260.0" />
+      <point x="880.3807915057915" y="260.0" />
+      <point x="33.625" y="48.5" />
+    </edge>
+    <edge source="MainApplication.ChatServer" target="MainApplication.ListenNewClient">
+      <point x="-101.33333333333331" y="-222.5" />
+      <point x="691.4998123123123" y="1150.0" />
+      <point x="458.75" y="1150.0" />
+      <point x="124.25" y="156.5" />
+    </edge>
+    <edge source="MainApplication.ClientConnection" target="MainApplication.Observer.ChatLogicSubject">
+      <point x="188.33333333333337" y="-233.5" />
+      <point x="778.125" y="260.0" />
+      <point x="813.1307915057915" y="260.0" />
+      <point x="-33.625" y="48.5" />
+    </edge>
+    <edge source="MainApplication.ChatServer" target="MainApplication.ServerPublisher">
+      <point x="-5.6843418860808015E-14" y="-222.5" />
+      <point x="792.8331456456456" y="1160.0" />
+      <point x="783.5416666666666" y="1160.0" />
+      <point x="-99.25" y="134.5" />
+    </edge>
+    <edge source="MainApplication.ClientConnection" target="MainApplication.Observer.ChatLogicObserver">
+      <point x="0.0" y="-233.5" />
+      <point x="589.7916666666666" y="250.0" />
+      <point x="498.7141248391249" y="250.0" />
+      <point x="498.7141248391249" y="113.0" />
+      <point x="827.7557915057915" y="113.0" />
+      <point x="-19.0" y="26.5" />
+    </edge>
+    <edge source="MainApplication.ChatServer" target="MainApplication.Observer.ChatLogicSubject">
+      <point x="67.55555555555549" y="-222.5" />
+      <point x="860.3887012012012" y="1140.0" />
+      <point x="1091.7916666666665" y="1140.0" />
+      <point x="1091.7916666666665" y="260.0" />
+      <point x="947.6307915057915" y="260.0" />
+      <point x="100.875" y="48.5" />
+    </edge>
+    <edge source="MainApplication.ChatLogSaver" target="MainApplication.Observer.ChatLogicObserver">
+      <point x="0.0" y="-58.5" />
+      <point x="1200.9849581724582" y="73.0" />
+      <point x="941.7557915057915" y="73.0" />
+      <point x="95.0" y="26.5" />
+    </edge>
+    <edge source="MainApplication.ServerPublisher" target="MainApplication.Observer.ChatLogicObserver">
+      <point x="79.39999999999998" y="-134.5" />
+      <point x="962.1916666666666" y="767.0" />
+      <point x="1119.3541666666665" y="767.0" />
+      <point x="1119.3541666666665" y="113.0" />
+      <point x="865.7557915057915" y="113.0" />
+      <point x="19.0" y="26.5" />
+    </edge>
+    <edge source="MainApplication.Observer.ChatLogicSubject" target="MainApplication.Observer.ChatLogicObserver">
+      <point x="0.0" y="-48.5" />
+      <point x="0.0" y="26.5" />
+    </edge>
+    <edge source="MainApplication.ChatServer" target="MainApplication.ClientConnection">
+      <point x="-33.77777777777777" y="-222.5" />
+      <point x="759.055367867868" y="1130.0" />
+      <point x="635.6488095238095" y="1130.0" />
+      <point x="635.6488095238095" y="777.0" />
+      <point x="670.5059523809524" y="777.0" />
+      <point x="80.71428571428578" y="233.5" />
+    </edge>
+    <edge source="MainApplication.ChatServer" target="MainApplication.Observer.ChatLogicObserver">
+      <point x="101.33333333333331" y="-222.5" />
+      <point x="894.1664789789791" y="1150.0" />
+      <point x="1141.3541666666665" y="1150.0" />
+      <point x="1141.3541666666665" y="93.0" />
+      <point x="903.7557915057915" y="93.0" />
+      <point x="57.0" y="26.5" />
+    </edge>
+    <edge source="MainApplication.ListenNewClient" target="MainApplication.Observer.ChatLogicSubject">
+      <point x="-41.41666666666674" y="-156.5" />
+      <point x="293.08333333333326" y="777.0" />
+      <point x="245.7706456456457" y="777.0" />
+      <point x="245.7706456456457" y="260.0" />
+      <point x="745.8807915057915" y="260.0" />
+      <point x="-100.875" y="48.5" />
+    </edge>
+    <edge source="MainApplication.ListenNewClient" target="MainApplication.ClientConnection">
+      <point x="207.08333333333326" y="-156.5" />
+      <point x="541.5833333333333" y="777.0" />
+      <point x="509.07738095238096" y="777.0" />
+      <point x="-80.71428571428567" y="233.5" />
+    </edge>
+    <edge source="MainApplication.ServerPublisher" target="MainApplication.ClientConnection">
+      <point x="-158.79999999999995" y="-134.5" />
+      <point x="723.9916666666667" y="777.0" />
+      <point x="751.2202380952381" y="777.0" />
+      <point x="161.42857142857144" y="233.5" />
+    </edge>
+    <edge source="MainApplication.Controller" target="MainApplication.Observer.ChatLogicObserver">
+      <point x="0.0" y="-14.5" />
+      <point x="75.5" y="73.0" />
+      <point x="751.7557915057915" y="73.0" />
+      <point x="-95.0" y="26.5" />
+    </edge>
+    <edge source="MainApplication.Main" target="MainApplication.ChatLogSaver">
+      <point x="36.25" y="-37.5" />
+      <point x="829.0831456456457" y="1655.0" />
+      <point x="1148.7349581724582" y="1655.0" />
+      <point x="-52.25" y="58.5" />
+    </edge>
+    <edge source="MainApplication.Main" target="MainApplication.Controller">
+      <point x="-36.25" y="-37.5" />
+      <point x="756.5831456456457" y="1655.0" />
+      <point x="113.25" y="1655.0" />
+      <point x="37.75" y="14.5" />
+    </edge>
+    <edge source="MainApplication.Main" target="MainApplication.ChatServer">
+      <point x="12.083333333333258" y="-37.5" />
+      <point x="804.916478978979" y="1645.0" />
+      <point x="868.8331456456456" y="1645.0" />
+      <point x="75.99999999999994" y="222.5" />
+    </edge>
+  </edges>
+  <settings layout="Hierarchic Group" zoom="0.5428868120456907" x="608.2505831021708" y="292.219778117827" />
+  <SelectedNodes>
+    <node>MainApplication.FXML</node>
+  </SelectedNodes>
   <Categories>
+    <Category>Methods</Category>
     <Category>Fields</Category>
     <Category>Constructors</Category>
-    <Category>Methods</Category>
-    <Category>Properties</Category>
-    <Category>Inner Classes</Category>
   </Categories>
   <SCOPE>All</SCOPE>
   <VISIBILITY>private</VISIBILITY>

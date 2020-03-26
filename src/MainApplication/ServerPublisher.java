@@ -40,7 +40,7 @@ public class ServerPublisher implements Runnable, ChatLogicSubject {
 
                 for (ChatroomPublisher c :
                         chatroomPublisherList) {
-                    if(c.equals(toPublish.getChatroomName())){
+                    if(c.getChatroomName().equals(toPublish.getChatroomName())){
                         c.addToMessageQueue(toPublish);
                     }
                 }

@@ -13,6 +13,7 @@ public class ChatroomPublisher implements Runnable {
     private List<ClientConnection> subscribedClientList;
     private BlockingQueue<Packet> chatroomMessageQueue;
 
+
     public ChatroomPublisher(String chatroomName, List<ClientConnection> subscribedClientList) {
         this.chatroomName = chatroomName;
         this.subscribedClientList = subscribedClientList;
