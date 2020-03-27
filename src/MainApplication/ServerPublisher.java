@@ -2,6 +2,7 @@ package MainApplication;
 
 import CS4B.Messages.ChatMessage;
 import CS4B.Messages.ChatroomList;
+import CS4B.Messages.NewChatroom;
 import CS4B.Messages.Packet;
 import MainApplication.Observer.ChatLogicObserver;
 import MainApplication.Observer.ChatLogicSubject;
@@ -24,16 +25,19 @@ public class ServerPublisher implements Runnable, ChatLogicSubject {
     private BlockingQueue<ServerPacket> publishMessageQueue;
     private List<ClientConnection> clientConnectionList;
     private List<ChatroomPublisher> chatroomPublisherList;
+    private ArrayList<String> chatrooms;
 
     public ServerPublisher(BlockingQueue<ServerPacket> publishMessageQueue, List<ClientConnection> clientConnectionList, List<ChatLogicObserver> chatLogicObservers, ArrayList<String> chatrooms) {
         this.publishMessageQueue = publishMessageQueue;
         this.clientConnectionList = clientConnectionList;
         this.chatLogicObservers = chatLogicObservers;
+        this.chatrooms = chatrooms;
 
         chatroomPublisherList = new ArrayList<>();
         for(String s : chatrooms){
             chatroomPublisherList.add(new ChatroomPublisher(s, chatLogicObservers));
         }
+        System.out.println("Size of chatroompublisher list: " + chatroomPublisherList.size());
 
         Thread thread = new Thread(this);
         thread.start();
@@ -55,17 +59,34 @@ public class ServerPublisher implements Runnable, ChatLogicSubject {
                         }
                     }
                 }
+                else if(serverPacket.getPacket().getMessageType().equals("NewChatroomRequest")){
+                    //received new chatroom request, need to update list of chatrooms, create new chatroompublisher, and send it back to the client
+                    NewChatroom newChatroom = (NewChatroom)serverPacket.getPacket().getMessage();
+
+                    String msg = "Adding chatroom " + newChatroom.getNewChatroomName() + " to list";
+                    System.out.println(msg);
+                    notifyObserverText(msg);
+                    chatrooms.add(newChatroom.getNewChatroomName());
+
+                    for(ClientConnection c: clientConnectionList){
+                        c.getObjectOutputStream().reset();
+                        Packet packet = new Packet("Server", "N/A", new ChatroomList(chatrooms), "ChatroomList");
+                        c.getObjectOutputStream().writeObject(packet);
+                    }
+
+                }
                 else{
                     for (ChatroomPublisher c :
                             chatroomPublisherList) {
                         if(c.equals(serverPacket.getPacket().getChatroomName())){
                             c.addToMessageQueue(serverPacket);
+                            System.out.println("Added to messageQueue");
                         }
                     }
                 }
 
 
-            } catch (InterruptedException e) {
+            } catch (InterruptedException | IOException e) {
                 e.printStackTrace();
                 break;
             }

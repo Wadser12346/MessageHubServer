@@ -38,6 +38,27 @@ public class ChatroomPublisher implements Runnable, ChatLogicSubject {
         subscribedClientList.add(client);
     }
 
+
+    @Override
+    public void run() {
+        while(true){
+            try {
+                ServerPacket serverPacket = chatroomMessageQueue.take();
+                String publishMessage = chatroomName + " publish: " + trimPacketMessage(serverPacket);
+                System.out.println(publishMessage);
+                Packet packet = serverPacket.getPacket();
+
+                for (ClientConnection c :
+                        subscribedClientList) {
+                    c.getObjectOutputStream().writeObject(packet);
+                }
+                
+            } catch (InterruptedException | IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
     //TODO: Move this function to inside packet so server can print necessary info easily, or update toString();
     private String trimPacketMessage(ServerPacket serverPacket){
         Packet packet = serverPacket.getPacket();
@@ -55,25 +76,6 @@ public class ChatroomPublisher implements Runnable, ChatLogicSubject {
         }
 
         return packet.toString();
-    }
-
-    @Override
-    public void run() {
-        while(true){
-            try {
-                ServerPacket serverPacket = chatroomMessageQueue.take();
-                String publishMessage = chatroomName + " publish: " + trimPacketMessage(serverPacket);
-                System.out.println(publishMessage);
-
-                for (ClientConnection c :
-                        subscribedClientList) {
-                    c.getObjectOutputStream().writeObject(serverPacket);
-                }
-                
-            } catch (InterruptedException | IOException e) {
-                e.printStackTrace();
-            }
-        }
     }
 
     @Override

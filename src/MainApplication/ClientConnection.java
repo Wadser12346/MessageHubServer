@@ -68,7 +68,8 @@ public class ClientConnection implements Runnable, ChatLogicSubject {
             this.objectOutputStream = new ObjectOutputStream(socket.getOutputStream());
 
             while(true){
-                ServerPacket received = (ServerPacket) inputFromClient.readObject();
+                Packet packet = (Packet)inputFromClient.readObject();
+                ServerPacket received = new ServerPacket(this, packet);
                 if (received.getPacket().getMessageType().equals("ChatMessage")){
                     String msg = "From client: " + getLast4ID() + " : " + trimPacketMessage(received) + '\n';
                     System.out.println(msg);
@@ -80,19 +81,21 @@ public class ClientConnection implements Runnable, ChatLogicSubject {
                     System.out.println("Sending Chatroom List");
                     objectOutputStream.writeObject(new Packet("Server", "N/A", new ChatroomList(chatrooms), "ChatroomList"));
                 }
-                else if(received.getPacket().getMessageType().equals("NewChatroomRequest")){
-                    //received new chatroom request, need to update list of chatrooms and send it back to client
-                    NewChatroom newChatroom = (NewChatroom)received.getPacket().getMessage();
-                    String msg = "Adding chatroom " + newChatroom.getNewChatroomName() + " to list";
-                    System.out.println(msg);
-                    notifyObserverText(msg);
-                    chatrooms.add(newChatroom.getNewChatroomName());
-                    objectOutputStream.reset();
-                    //publishMessageQueue.put(new Packet("Server", "N/A", new ChatroomList(chatrooms), "ChatroomList"));
-                    Packet packet = new Packet("Server", "N/A", new ChatroomList(chatrooms), "ChatroomList");
-                    ServerPacket sv = new ServerPacket(this, packet);
-                    publishMessageQueue.put(sv);
-                }
+                //HANDLED IN SERVERPUBLISHER
+//                else if(received.getPacket().getMessageType().equals("NewChatroomRequest")){
+//                    //received new chatroom request, need to update list of chatrooms and send it back to client
+//                    NewChatroom newChatroom = (NewChatroom)received.getPacket().getMessage();
+//                    String msg = "Adding chatroom " + newChatroom.getNewChatroomName() + " to list";
+//                    System.out.println(msg);
+//                    notifyObserverText(msg);
+//                    chatrooms.add(newChatroom.getNewChatroomName());
+//
+//                    objectOutputStream.reset();
+//                    //publishMessageQueue.put(new Packet("Server", "N/A", new ChatroomList(chatrooms), "ChatroomList"));
+//                    Packet packet = new Packet("Server", "N/A", new ChatroomList(chatrooms), "ChatroomList");
+//                    ServerPacket sv = new ServerPacket(this, packet);
+//                    publishMessageQueue.put(sv);
+//                }
                 else if(received.getPacket().getMessageType().equals("DisconnectMessageClient")){
                     //received disconnect message from client
                     String msg = "client" + getLast4ID() + " disconnect";

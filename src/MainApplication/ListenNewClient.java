@@ -59,9 +59,6 @@ public class ListenNewClient implements Runnable, ChatLogicSubject {
 
                 ClientConnection clientConnection = new ClientConnection(socket, clientNo, clientConnectionList, publishMessageQueue, chatLogicObservers, chatrooms);
 
-                for(int i = 0; i < chatLogicObservers.size(); i++){
-                    clientConnection.addObserver(chatLogicObservers.get(i));
-                }
             }
         } catch (IOException e) {
             e.printStackTrace();
