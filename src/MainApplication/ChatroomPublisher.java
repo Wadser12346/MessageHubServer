@@ -19,22 +19,12 @@ public class ChatroomPublisher implements Runnable, ChatLogicSubject {
     private BlockingQueue<ServerPacket> chatroomMessageQueue;
 
 
-    public ChatroomPublisher(String chatroomName, List<ClientConnection> subscribedClientList) {
+    public ChatroomPublisher(String chatroomName, List<ChatLogicObserver> chatLogicObservers) {
         this.chatroomName = chatroomName;
-        this.subscribedClientList = subscribedClientList;
-
-        chatLogicObservers = new ArrayList<>();
-
+        this.chatLogicObservers = chatLogicObservers;
         chatroomMessageQueue = new ArrayBlockingQueue<>(500);
+        this.subscribedClientList = new ArrayList<>();
     }
-
-//    @Override
-//    public boolean equals(Object obj){
-//        if(obj instanceof String){
-//            return obj.equals(chatroomName);
-//        }
-//        return false;
-//    }
 
     public String getChatroomName() {
         return chatroomName;

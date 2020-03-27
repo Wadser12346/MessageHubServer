@@ -30,12 +30,18 @@ public class ServerPublisher implements Runnable, ChatLogicSubject {
         this.clientConnectionList = clientConnectionList;
         this.chatLogicObservers = chatLogicObservers;
 
+        chatroomPublisherList = new ArrayList<>();
+        for(String s : chatrooms){
+            chatroomPublisherList.add(new ChatroomPublisher(s, chatLogicObservers));
+        }
+
         Thread thread = new Thread(this);
         thread.start();
 
     }
 
-    public void run2(){
+    @Override
+    public void run(){
         while(true){
             try {
                 ServerPacket serverPacket = publishMessageQueue.take();
@@ -66,8 +72,8 @@ public class ServerPublisher implements Runnable, ChatLogicSubject {
         }
     }
 
-    @Override
-    public void run() {
+//    @Override
+    public void run2() {
 
         while(true){
             try {
