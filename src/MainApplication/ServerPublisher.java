@@ -37,6 +37,18 @@ public class ServerPublisher implements Runnable, ChatLogicSubject {
             try {
                 Packet toPublish = publishMessageQueue.take();
 
+                if(toPublish.getMessageType().equals("ConnectToChatroom")){
+                    //client picked a chatroom and is now subscribed to this chatroom.
+                    //add client to this list of subscribed clients of this chatroom
+                    //need to send client history of chat (50 chats)
+                    String chatroomName = toPublish.getChatroomName();
+                    String userName = toPublish.getUser();
+
+                    for(int i = 0; i < clientConnectionList.size(); i++){
+//                        if(clientConnectionList.get(i).get)
+                    }
+                }
+
                 for (ChatroomPublisher c :
                         chatroomPublisherList) {
                     if(c.getChatroomName().equals(toPublish.getChatroomName())){

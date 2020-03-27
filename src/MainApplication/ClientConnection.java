@@ -60,7 +60,6 @@ public class ClientConnection implements Runnable, ChatLogicSubject {
         try {
             ObjectInputStream inputFromClient = new ObjectInputStream(socket.getInputStream());
             this.objectOutputStream = new ObjectOutputStream(socket.getOutputStream());
-
             while(true){
                 Packet received = (Packet) inputFromClient.readObject();
                 if (received.getMessageType().equals("ChatMessage")){
@@ -84,6 +83,9 @@ public class ClientConnection implements Runnable, ChatLogicSubject {
                     objectOutputStream.reset();
                     publishMessageQueue.put(new Packet("Server", "N/A", new ChatroomList(chatrooms), "ChatroomList"));
                 }
+
+
+
                 else if(received.getMessageType().equals("DisconnectMessageClient")){
                     //received disconnect message from client
                     String msg = "client" + getLast4ID() + " disconnect";
