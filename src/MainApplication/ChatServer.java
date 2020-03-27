@@ -5,6 +5,7 @@ import CS4B.Messages.Packet;
 import MainApplication.Observer.ChatLogicObserver;
 import MainApplication.Observer.ChatLogicSubject;
 
+import MainApplication.PacketWrapper.ServerPacket;
 import javafx.scene.control.TextArea;
 
 import java.io.File;
@@ -21,7 +22,7 @@ public class ChatServer implements Runnable, ChatLogicSubject {
     private ArrayList<String> chatrooms;
 
     private List<ClientConnection> clientConnectionList;
-    private BlockingQueue<Packet> publishMessageQueue;
+    private BlockingQueue<ServerPacket> publishMessageQueue;
 
     private ServerPublisher serverPublisher;
     private ListenNewClient listenNewClient;
@@ -40,7 +41,7 @@ public class ChatServer implements Runnable, ChatLogicSubject {
     }
 
     public void startServer(){
-        serverPublisher = new ServerPublisher(publishMessageQueue,clientConnectionList);
+        serverPublisher = new ServerPublisher(publishMessageQueue,clientConnectionList, chatrooms);
         listenNewClient = new ListenNewClient(publishMessageQueue, clientConnectionList, chatrooms);
         //add observers, since observer list is not passed down.
         for(int i = 0; i < chatLogicObservers.size(); i++){

@@ -4,6 +4,7 @@ import CS4B.Messages.ChatMessage;
 import CS4B.Messages.Packet;
 import MainApplication.Observer.ChatLogicObserver;
 import MainApplication.Observer.ChatLogicSubject;
+import MainApplication.PacketWrapper.ServerPacket;
 
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -21,12 +22,12 @@ public class ListenNewClient implements Runnable, ChatLogicSubject {
     private ArrayList<String> chatrooms;
 
     private int clientNo;
-    private BlockingQueue<Packet> publishMessageQueue; //Only here so this queue can be passed to ClientConnection
+    private BlockingQueue<ServerPacket> publishMessageQueue; //Only here so this queue can be passed to ClientConnection
     private List<ClientConnection> clientConnectionList;
 
     private Thread thread;
 
-    public ListenNewClient(BlockingQueue<Packet> publishMessageQueue, List<ClientConnection> clientConnectionList, ArrayList<String> chatrooms) {
+    public ListenNewClient(BlockingQueue<ServerPacket> publishMessageQueue, List<ClientConnection> clientConnectionList, ArrayList<String> chatrooms) {
         this.publishMessageQueue = publishMessageQueue;
         this.clientConnectionList = clientConnectionList;
         chatLogicObservers = new ArrayList<>();

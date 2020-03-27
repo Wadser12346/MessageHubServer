@@ -1,20 +1,21 @@
 package MainApplication.PacketWrapper;
 
 import CS4B.Messages.Packet;
+import MainApplication.ClientConnection;
 
 import java.util.UUID;
 
 public class ServerPacket {
-    private UUID id;
+    private ClientConnection clientConnection;
     private Packet packet;
 
-    public ServerPacket(UUID id, Packet packet) {
-        this.id = id;
+    public ServerPacket(ClientConnection clientConnection, Packet packet) {
+        this.clientConnection = clientConnection;
         this.packet = packet;
     }
 
-    public UUID getId() {
-        return id;
+    public ClientConnection getClientConnection() {
+        return clientConnection;
     }
 
     public Packet getPacket() {

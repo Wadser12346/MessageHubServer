@@ -2,6 +2,7 @@ package MainApplication;
 
 import CS4B.Messages.ChatMessage;
 import CS4B.Messages.Packet;
+import MainApplication.PacketWrapper.ServerPacket;
 
 import java.io.IOException;
 import java.util.List;
@@ -11,7 +12,7 @@ import java.util.concurrent.BlockingQueue;
 public class ChatroomPublisher implements Runnable {
     private String chatroomName;
     private List<ClientConnection> subscribedClientList;
-    private BlockingQueue<Packet> chatroomMessageQueue;
+    private BlockingQueue<ServerPacket> chatroomMessageQueue;
 
     public ChatroomPublisher(String chatroomName, List<ClientConnection> subscribedClientList) {
         this.chatroomName = chatroomName;
@@ -32,8 +33,8 @@ public class ChatroomPublisher implements Runnable {
         return chatroomName;
     }
 
-    void addToMessageQueue(Packet packet) throws InterruptedException {
-        chatroomMessageQueue.put(packet);
+    void addToMessageQueue(ServerPacket serverPacket) throws InterruptedException {
+        chatroomMessageQueue.put(serverPacket);
     }
 
     public void addClientToRoom(ClientConnection client){
@@ -41,7 +42,8 @@ public class ChatroomPublisher implements Runnable {
     }
 
     //TODO: Move this function to inside packet so server can print necessary info easily, or update toString();
-    private String trimPacketMessage(Packet packet){
+    private String trimPacketMessage(ServerPacket serverPacket){
+        Packet packet = serverPacket.getPacket();
         if(packet.getMessage() instanceof ChatMessage){
             ChatMessage cm = (ChatMessage)packet.getMessage();
             StringBuilder stringBuilder = new StringBuilder("");
@@ -62,13 +64,13 @@ public class ChatroomPublisher implements Runnable {
     public void run() {
         while(true){
             try {
-                Packet toPublish = chatroomMessageQueue.take();
-                String publishMessage = chatroomName + " publish: " + trimPacketMessage(toPublish);
+                ServerPacket serverPacket = chatroomMessageQueue.take();
+                String publishMessage = chatroomName + " publish: " + trimPacketMessage(serverPacket);
                 System.out.println(publishMessage);
 
                 for (ClientConnection c :
                         subscribedClientList) {
-                    c.getObjectOutputStream().writeObject(toPublish);
+                    c.getObjectOutputStream().writeObject(serverPacket);
                 }
                 
             } catch (InterruptedException | IOException e) {
