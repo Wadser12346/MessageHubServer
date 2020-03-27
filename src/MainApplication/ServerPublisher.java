@@ -11,7 +11,6 @@ import javafx.application.Platform;
 import javafx.scene.control.TextArea;
 
 import java.io.*;
-import java.lang.reflect.Array;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -26,16 +25,13 @@ public class ServerPublisher implements Runnable, ChatLogicSubject {
     private List<ClientConnection> clientConnectionList;
     private List<ChatroomPublisher> chatroomPublisherList;
 
-    public ServerPublisher(BlockingQueue<ServerPacket> publishMessageQueue, List<ClientConnection> clientConnectionList, ArrayList<String> chatrooms) {
+    public ServerPublisher(BlockingQueue<ServerPacket> publishMessageQueue, List<ClientConnection> clientConnectionList, List<ChatLogicObserver> chatLogicObservers, ArrayList<String> chatrooms) {
         this.publishMessageQueue = publishMessageQueue;
         this.clientConnectionList = clientConnectionList;
-
-
-        chatLogicObservers = new ArrayList<>();
+        this.chatLogicObservers = chatLogicObservers;
 
         Thread thread = new Thread(this);
         thread.start();
-
 
     }
 

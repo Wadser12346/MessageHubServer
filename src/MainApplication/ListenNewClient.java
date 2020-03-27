@@ -27,10 +27,10 @@ public class ListenNewClient implements Runnable, ChatLogicSubject {
 
     private Thread thread;
 
-    public ListenNewClient(BlockingQueue<ServerPacket> publishMessageQueue, List<ClientConnection> clientConnectionList, ArrayList<String> chatrooms) {
+    public ListenNewClient(BlockingQueue<ServerPacket> publishMessageQueue, List<ClientConnection> clientConnectionList, List<ChatLogicObserver> chatLogicObservers, ArrayList<String> chatrooms) {
         this.publishMessageQueue = publishMessageQueue;
         this.clientConnectionList = clientConnectionList;
-        chatLogicObservers = new ArrayList<>();
+        this.chatLogicObservers = chatLogicObservers;
         this.chatrooms = chatrooms;
 
         clientNo = 0;
@@ -57,7 +57,7 @@ public class ListenNewClient implements Runnable, ChatLogicSubject {
                 System.out.println(clientInfoMessage);
                 notifyObserverText(clientInfoMessage);
 
-                ClientConnection clientConnection = new ClientConnection(socket, clientNo, clientConnectionList, publishMessageQueue, chatrooms);
+                ClientConnection clientConnection = new ClientConnection(socket, clientNo, clientConnectionList, publishMessageQueue, chatLogicObservers, chatrooms);
 
                 for(int i = 0; i < chatLogicObservers.size(); i++){
                     clientConnection.addObserver(chatLogicObservers.get(i));

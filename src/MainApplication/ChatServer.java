@@ -30,10 +30,11 @@ public class ChatServer implements Runnable, ChatLogicSubject {
 
     public ChatServer() {
         publishMessageQueue = new ArrayBlockingQueue<>(100);
-        clientConnectionList = new ArrayList<>();
+        clientConnectionList = Collections.synchronizedList(new ArrayList<>());
 
         thread = new Thread(this);
-        chatLogicObservers = new ArrayList<>();
+        //chatLogicObservers = new ArrayList<>();
+        chatLogicObservers = Collections.synchronizedList(new ArrayList<>());
 
         chatrooms = new ArrayList<>();
         chatrooms.add("Chatroom4B");
@@ -41,13 +42,9 @@ public class ChatServer implements Runnable, ChatLogicSubject {
     }
 
     public void startServer(){
-        serverPublisher = new ServerPublisher(publishMessageQueue,clientConnectionList, chatrooms);
-        listenNewClient = new ListenNewClient(publishMessageQueue, clientConnectionList, chatrooms);
-        //add observers, since observer list is not passed down.
-        for(int i = 0; i < chatLogicObservers.size(); i++){
-            serverPublisher.addObserver(chatLogicObservers.get(i));
-            listenNewClient.addObserver(chatLogicObservers.get(i));
-        }
+        serverPublisher = new ServerPublisher(publishMessageQueue,clientConnectionList, chatLogicObservers, chatrooms);
+        listenNewClient = new ListenNewClient(publishMessageQueue, clientConnectionList, chatLogicObservers, chatrooms);
+
         String startMsg = "MultiThreaded server started at " + new Date() + '\n';
         System.out.println(startMsg);
         notifyObserverText(startMsg);

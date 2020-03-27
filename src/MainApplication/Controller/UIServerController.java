@@ -33,4 +33,6 @@ public class UIServerController implements ChatLogicObserver {
     public void onTextNotification(String message) {
         serverLogTextArea.appendText(message);
     }
+
+
 }

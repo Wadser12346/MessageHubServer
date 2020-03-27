@@ -30,14 +30,14 @@ public class ClientConnection implements Runnable, ChatLogicSubject {
     private BlockingQueue<ServerPacket> publishMessageQueue; //passed from ChatServer
     private List<ClientConnection> clientConnectionList;
 
-    public ClientConnection(Socket socket, int clientNo, List<ClientConnection> clientConnectionList, BlockingQueue<ServerPacket> publishMessageQueue, ArrayList<String> chatrooms) {
+    public ClientConnection(Socket socket, int clientNo, List<ClientConnection> clientConnectionList, BlockingQueue<ServerPacket> publishMessageQueue, List<ChatLogicObserver> chatLogicObservers, ArrayList<String> chatrooms) {
         this.socket = socket;
         this.clientNo = clientNo;
         this.chatrooms = chatrooms;
         this.publishMessageQueue = publishMessageQueue;
         this.clientConnectionList = clientConnectionList;
         this.clientConnectionList.add(this);
-        chatLogicObservers = new ArrayList<>();
+        this.chatLogicObservers = chatLogicObservers;
 
         id = UUID.randomUUID();
 
