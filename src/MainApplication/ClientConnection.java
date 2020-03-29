@@ -103,6 +103,9 @@ public class ClientConnection implements Runnable, ChatLogicSubject {
                     System.out.println(msg);
                     break;
                 }
+                else{
+                    publishMessageQueue.put(received);
+                }
             }
         }
         catch (IOException e) {
