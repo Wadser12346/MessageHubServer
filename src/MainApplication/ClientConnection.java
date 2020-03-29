@@ -103,6 +103,7 @@ public class ClientConnection implements Runnable, ChatLogicSubject {
 //                }
                 else if(received.getPacket().getMessageType().equals("DisconnectMessageClient")){
                     //received disconnect message from client
+                    publishMessageQueue.put(received);
                     String msg = "client" + getLast4ID() + " disconnect";
                     notifyObserverText(msg);
                     System.out.println(msg);

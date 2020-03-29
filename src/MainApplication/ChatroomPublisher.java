@@ -63,12 +63,17 @@ public class ChatroomPublisher implements Runnable, ChatLogicSubject {
 
                 Packet packet = serverPacket.getPacket();
 
-                for (ClientConnection c :
-                        subscribedClientList) {
-                    c.getObjectOutputStream().writeObject(packet);
+                if(serverPacket.getPacket().getMessageType().equals("DisconnectMessageClient")){
+                    subscribedClientList.remove(serverPacket.getClientConnection());
+                }
+                else{
+                    for (ClientConnection c :
+                            subscribedClientList) {
+                        c.getObjectOutputStream().writeObject(packet);
+                    }
                 }
                 addToHistory(packet);
-                
+
             } catch (InterruptedException | IOException e) {
                 e.printStackTrace();
             }
