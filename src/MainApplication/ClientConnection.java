@@ -71,7 +71,7 @@ public class ClientConnection implements Runnable, ChatLogicSubject {
                 Packet packet = (Packet)inputFromClient.readObject();
                 ServerPacket received = new ServerPacket(this, packet);
                 if (received.getPacket().getMessageType().equals("ChatMessage")){
-                    String msg = "From client: " + getLast4ID() + " : " + trimPacketMessage(received) + '\n';
+                    String msg = "From client: " + getLast4ID() + " : " + received.getTrimmedMessage() + '\n';
                     System.out.println(msg);
                     notifyObserverText(msg);
                     publishMessageQueue.put(received);
@@ -119,24 +119,6 @@ public class ClientConnection implements Runnable, ChatLogicSubject {
         finally {
             clientConnectionList.remove(this);
         }
-    }
-
-    private String trimPacketMessage(ServerPacket serverPacket){
-        Packet packet = serverPacket.getPacket();
-        if(packet.getMessage() instanceof ChatMessage){
-            ChatMessage cm = (ChatMessage)packet.getMessage();
-            StringBuilder stringBuilder = new StringBuilder("");
-            stringBuilder.append(packet.getUser() + ": ");
-            stringBuilder.append(cm.getStringMessage());
-
-            if(cm.hasPictureMessage()){
-                stringBuilder.append(" + Image");
-            }
-
-            return stringBuilder.toString();
-        }
-
-        return packet.toString();
     }
 
     private String getLast4ID(){

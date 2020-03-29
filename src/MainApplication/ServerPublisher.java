@@ -1,9 +1,6 @@
 package MainApplication;
 
-import CS4B.Messages.ChatMessage;
-import CS4B.Messages.ChatroomList;
-import CS4B.Messages.NewChatroom;
-import CS4B.Messages.Packet;
+import CS4B.Messages.*;
 import MainApplication.Observer.ChatLogicObserver;
 import MainApplication.Observer.ChatLogicSubject;
 
@@ -56,6 +53,14 @@ public class ServerPublisher implements Runnable, ChatLogicSubject {
                             chatroomPublisherList) {
                         if (c.getChatroomName().equals(serverPacket.getPacket().getChatroomName())){
                             c.addClientToRoom(serverPacket.getClientConnection());
+
+                            //send confirmation to client
+                            String clientUser = serverPacket.getClientConnection().getId().toString();
+                            String chatroomName = c.getChatroomName();
+                            JoinSucessful joinSucessful = new JoinSucessful(chatroomName);
+                            String messageTypeBack = "JoinSuccessful";
+                            Packet confirmationPacket = new Packet(clientUser, chatroomName, joinSucessful, messageTypeBack);
+                            serverPacket.getClientConnection().getObjectOutputStream().writeObject(confirmationPacket);
                         }
                     }
                 }

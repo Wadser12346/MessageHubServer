@@ -44,7 +44,7 @@ public class ChatroomPublisher implements Runnable, ChatLogicSubject {
         while(true){
             try {
                 ServerPacket serverPacket = chatroomMessageQueue.take();
-                String publishMessage = chatroomName + " publish: " + trimPacketMessage(serverPacket);
+                String publishMessage = chatroomName + " publish: " + serverPacket.getTrimmedMessage();
                 System.out.println(publishMessage);
                 Packet packet = serverPacket.getPacket();
 
@@ -57,25 +57,6 @@ public class ChatroomPublisher implements Runnable, ChatLogicSubject {
                 e.printStackTrace();
             }
         }
-    }
-
-    //TODO: Move this function to inside packet so server can print necessary info easily, or update toString();
-    private String trimPacketMessage(ServerPacket serverPacket){
-        Packet packet = serverPacket.getPacket();
-        if(packet.getMessage() instanceof ChatMessage){
-            ChatMessage cm = (ChatMessage)packet.getMessage();
-            StringBuilder stringBuilder = new StringBuilder("");
-            stringBuilder.append(packet.getUser() + ": ");
-            stringBuilder.append(cm.getStringMessage());
-
-            if(cm.hasPictureMessage()){
-                stringBuilder.append(" + Image");
-            }
-
-            return stringBuilder.toString();
-        }
-
-        return packet.toString();
     }
 
     @Override
