@@ -70,6 +70,11 @@ public class ClientConnection implements Runnable, ChatLogicSubject {
             while(true){
                 Packet packet = (Packet)inputFromClient.readObject();
                 ServerPacket received = new ServerPacket(this, packet);
+
+                String packetReceivedType = "Packet received type: " + packet.getMessageType();
+                System.out.println(packetReceivedType);
+                notifyObserverText(packetReceivedType);
+
                 if (received.getPacket().getMessageType().equals("ChatMessage")){
                     String msg = "From client: " + getLast4ID() + " : " + received.getTrimmedMessage() + '\n';
                     System.out.println(msg);
