@@ -53,14 +53,21 @@ public class ServerPublisher implements Runnable, ChatLogicSubject {
                             chatroomPublisherList) {
                         if (c.getChatroomName().equals(serverPacket.getPacket().getChatroomName())){
                             c.addClientToRoom(serverPacket.getClientConnection());
+                            String clientUser = serverPacket.getPacket().getUser();
+                            String messageOut = clientUser + " has joined the chatroom..\n";
+                            notifyObserverText(messageOut);
+
+                            ChatMessage cm = new ChatMessage(new StringMessage(messageOut));
+                            ServerPacket sv = new ServerPacket(null, new Packet(clientUser, c.getChatroomName(), cm, "JoinSuccessful"));
+                            c.addToMessageQueue(sv);
 
                             //send confirmation to client
-                            String clientUser = serverPacket.getClientConnection().getId().toString();
-                            String chatroomName = c.getChatroomName();
-                            JoinSucessful joinSucessful = new JoinSucessful(chatroomName);
-                            String messageTypeBack = "JoinSuccessful";
-                            Packet confirmationPacket = new Packet(clientUser, chatroomName, joinSucessful, messageTypeBack);
-                            serverPacket.getClientConnection().getObjectOutputStream().writeObject(confirmationPacket);
+//                            String clientUser = serverPacket.getClientConnection().getId().toString();
+//                            String chatroomName = c.getChatroomName();
+//                            JoinSucessful joinSucessful = new JoinSucessful(chatroomName);
+//                            String messageTypeBack = "JoinSuccessful";
+//                            Packet confirmationPacket = new Packet(clientUser, chatroomName, joinSucessful, messageTypeBack);
+//                            serverPacket.getClientConnection().getObjectOutputStream().writeObject(confirmationPacket);
                         }
                     }
                 }
@@ -80,7 +87,23 @@ public class ServerPublisher implements Runnable, ChatLogicSubject {
                     }
 
                 }
+                else if(serverPacket.getPacket().getMessageType().equals("")){
+                    for(ChatroomPublisher c: chatroomPublisherList){
+                        if(c.getChatroomName().equals(serverPacket.getPacket().getChatroomName())){
+                            c.removeClientFromRoom(serverPacket.getClientConnection());
+
+                            String clientUser = serverPacket.getPacket().getUser();
+                            String messageOut = clientUser + " has left the chatroom..\n";
+                            notifyObserverText(messageOut);
+
+                            ChatMessage cm = new ChatMessage(new StringMessage(messageOut));
+                            ServerPacket sv = new ServerPacket(null, new Packet(clientUser, c.getChatroomName(), cm, "UnJoinSuccessful"));
+                            c.addToMessageQueue(sv);
+                        }
+                    }
+                }
                 else{
+                    System.out.println("chatroom name: " + serverPacket.getPacket().getChatroomName());
                     for (ChatroomPublisher c :
                             chatroomPublisherList) {
                         if(c.equals(serverPacket.getPacket().getChatroomName())){

@@ -44,12 +44,16 @@ public class ChatroomPublisher implements Runnable, ChatLogicSubject {
         return chatroomName;
     }
 
-    void addToMessageQueue(ServerPacket serverPacket) throws InterruptedException {
+    public void addToMessageQueue(ServerPacket serverPacket) throws InterruptedException {
         chatroomMessageQueue.put(serverPacket);
     }
 
     public void addClientToRoom(ClientConnection client){
         subscribedClientList.add(client);
+    }
+
+    public void removeClientFromRoom(ClientConnection client) {
+        subscribedClientList.remove(client);
     }
 
 

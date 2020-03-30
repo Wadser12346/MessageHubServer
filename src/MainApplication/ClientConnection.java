@@ -71,7 +71,7 @@ public class ClientConnection implements Runnable, ChatLogicSubject {
                 Packet packet = (Packet)inputFromClient.readObject();
                 ServerPacket received = new ServerPacket(this, packet);
 
-                String packetReceivedType = "Packet received type: " + packet.getMessageType();
+                String packetReceivedType = "Packet received type: " + packet.getMessageType() +"\n";
                 System.out.println(packetReceivedType);
                 notifyObserverText(packetReceivedType);
 
@@ -109,6 +109,13 @@ public class ClientConnection implements Runnable, ChatLogicSubject {
                     System.out.println(msg);
                     break;
                 }
+                else if(received.getPacket().getMessageType().equals("UnJoinChatroom")){
+                    publishMessageQueue.put(received);
+                    String msg = "client" + getLast4ID() + " left chatroom " + received.getPacket().getChatroomName();
+                    notifyObserverText(msg);
+                    System.out.println(msg);
+                }
+
                 else{
                     publishMessageQueue.put(received);
                 }
