@@ -87,7 +87,7 @@ public class ServerPublisher implements Runnable, ChatLogicSubject {
                     }
 
                 }
-                else if(serverPacket.getPacket().getMessageType().equals("")){
+                else if(serverPacket.getPacket().getMessageType().equals("UnJoinChatroom")){
                     for(ChatroomPublisher c: chatroomPublisherList){
                         if(c.getChatroomName().equals(serverPacket.getPacket().getChatroomName())){
                             c.removeClientFromRoom(serverPacket.getClientConnection());
@@ -106,7 +106,7 @@ public class ServerPublisher implements Runnable, ChatLogicSubject {
                     System.out.println("chatroom name: " + serverPacket.getPacket().getChatroomName());
                     for (ChatroomPublisher c :
                             chatroomPublisherList) {
-                        if(c.equals(serverPacket.getPacket().getChatroomName())){
+                        if(c.getChatroomName().equals(serverPacket.getPacket().getChatroomName())){
                             c.addToMessageQueue(serverPacket);
                             System.out.println("Added to messageQueue");
                         }
