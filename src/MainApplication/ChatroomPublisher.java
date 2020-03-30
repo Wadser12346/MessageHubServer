@@ -30,6 +30,9 @@ public class ChatroomPublisher implements Runnable, ChatLogicSubject {
         this.subscribedClientList = new ArrayList<>();
 
         chatHistory = new ArrayDeque<>();
+
+        Thread thread = new Thread(this);
+        thread.start();
     }
 
     public void addToHistory(Packet packet){
